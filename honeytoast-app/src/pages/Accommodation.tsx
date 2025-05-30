@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Hotel() {
+function Accommodation() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function Hotel() {
   )
 }
 
-export default Hotel;
+export default Accommodation;
