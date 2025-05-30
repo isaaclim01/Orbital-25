@@ -1,6 +1,5 @@
 import React from 'react';
-import { canHaveModifiers, classicNameResolver } from 'typescript';
-import { FaHome, FaBed } from "react-icons/fa";
+import { FaHome, FaBed, FaCalendarAlt } from "react-icons/fa";
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
 import { CiViewList } from "react-icons/ci";
 
@@ -8,25 +7,31 @@ export const SidebarData = [
     {
         title: 'Home',
         path:'/',
-        icon: <FaHome size="30"/>,
+        icon: <FaHome size="25"/>,
         cName: 'nav-text'
     },
         {
         title: 'Flight',
-        path:'/Flight',
-        icon: <PiAirplaneTakeoffLight size="30"/>,
+        path:'/flight',
+        icon: <PiAirplaneTakeoffLight size="25"/>,
         cName: 'nav-text'
     },
         {
         title: 'Accomodation',
-        path:'/Accomodation',
-        icon: <FaBed />,
+        path:'/accomodation',
+        icon: <FaBed size="25"/>,
         cName: 'nav-text'
     },
         {
         title: 'Itinerary',
-        path:'/Itinerary',
-        icon: <CiViewList />,
+        path:'/itinerary',
+        icon: <CiViewList size="25"/>,
+        cName: 'nav-text'
+    },
+        {
+        title: 'Calendar',
+        path:'/calendar',
+        icon: <FaCalendarAlt size="25"/>,
         cName: 'nav-text'
     },
 ]

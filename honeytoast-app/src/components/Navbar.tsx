@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Navbar.css';
+import Home from '../pages/Home';
+import Flight from '../pages/Flight';
+import Accommodation from '../pages/Accommodation';
+import Itinerary from '../pages/Itinerary';
+import Calendar from '../pages/Calendar';
 
 function Navbar() {
 
@@ -38,6 +43,13 @@ function Navbar() {
                 })}
                 </ul>
             </nav>
+            <Routes>
+              <Route path="/" element={<Home />}  />
+              <Route path="/flight" element={<Flight />} />
+              <Route path="/accommodation" element={<Accommodation />} />
+              <Route path="/itinerary" element={<Itinerary />} />
+              <Route path="/calendar" element={<Calendar />} />
+            </Routes>
         </div>
         </>
     )
