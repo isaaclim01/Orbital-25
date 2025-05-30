@@ -17,8 +17,8 @@ export const SidebarData = [
         cName: 'nav-text'
     },
         {
-        title: 'Accomodation',
-        path:'/accomodation',
+        title: 'Accommodation',
+        path:'/accommodation',
         icon: <FaBed size="25"/>,
         cName: 'nav-text'
     },

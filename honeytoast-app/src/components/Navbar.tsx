@@ -4,11 +4,8 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { Link, Route, Routes } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Navbar.css';
-import Home from '../pages/Home';
-import Flight from '../pages/Flight';
-import Accommodation from '../pages/Accommodation';
-import Itinerary from '../pages/Itinerary';
-import Calendar from '../pages/Calendar';
+import { GiButterToast } from "react-icons/gi";
+
 
 function Navbar() {
 
@@ -20,15 +17,18 @@ function Navbar() {
         <>
         <div className="navbar">
                 <Link to="#">
-                    <FaBarsStaggered size="25" color="#1E8449" onClick={showSidebar}/>
+                    <FaBarsStaggered className="fabar" size="25" onClick={showSidebar}/>
                 </Link>
+                <h1 className="app-name">
+                    HoneyToast <GiButterToast size ="25px"/>
+                </h1>
         </div>
         <div>
             <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
                 <ul className='nav-menu-items'>
                     <li className='navbar-toggle'>
                         <Link to="#" className='menu-bars'>
-                            <IoIosCloseCircleOutline size="25"/>
+                            <IoIosCloseCircleOutline color="#f5f5f5" size="35" onClick={showSidebar}/>
                         </Link>
                     </li>
                 {SidebarData.map((item, index) => {
@@ -43,13 +43,6 @@ function Navbar() {
                 })}
                 </ul>
             </nav>
-            <Routes>
-              <Route path="/" element={<Home />}  />
-              <Route path="/flight" element={<Flight />} />
-              <Route path="/accommodation" element={<Accommodation />} />
-              <Route path="/itinerary" element={<Itinerary />} />
-              <Route path="/calendar" element={<Calendar />} />
-            </Routes>
         </div>
         </>
     )
