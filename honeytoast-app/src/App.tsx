@@ -1,11 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Navbar from './components/Navbar';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Flight from './pages/Flight';
-import Hotel from './pages/Accomodation';
+import Accommodation from './pages/Accommodation';
+import Itinerary from './pages/Itinerary';
+import Calendar from './pages/Calendar';
 
 function App() {
   return (
@@ -15,10 +16,11 @@ function App() {
         <BrowserRouter>
             < Navbar />
             <Routes>
-              <Route path="/" element={<Link to="/home"></Link>} />
-              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Home />}  />
               <Route path="/flight" element={<Flight />} />
-              <Route path="/hotel" element={<Hotel />} />
+              <Route path="/accommodation" element={<Accommodation />} />
+              <Route path="/itinerary" element={<Itinerary />} />
+              <Route path="/calendar" element={<Calendar />} />
             </Routes>
         </BrowserRouter>
         
