@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Navbar.css';
 import { GiButterToast } from "react-icons/gi";

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaHome, FaBed, FaCalendarAlt } from "react-icons/fa";
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
 import { CiViewList } from "react-icons/ci";
