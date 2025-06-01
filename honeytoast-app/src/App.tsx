@@ -28,7 +28,7 @@ import HoneyToast from './pages/HoneyToast'
       return <LoginPage />
     }
     else {
-      return <HoneyToast />
+      return <HoneyToast user={session.user}/>
     }
   }
 

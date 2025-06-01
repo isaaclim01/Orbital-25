@@ -7,8 +7,13 @@ import Itinerary from './Itinerary';
 import Calendar from './Calendar';
 import './HoneyToast.css';
 import { supabase } from '../App';
+import { Session } from '@supabase/supabase-js';
 
-function HoneyToast() {
+interface HoneyToastProps {
+  user: Session['user'];
+}
+
+function HoneyToast({user}: HoneyToastProps) {
 
   async function signOut() {
     const { error } = await supabase.auth.signOut()
@@ -28,7 +33,7 @@ function HoneyToast() {
 
         <div>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home user={user}/>} />
             <Route path="/flight" element={<Flight />} />
             <Route path="/accommodation" element={<Accommodation />} />
             <Route path="/itinerary" element={<Itinerary />} />
