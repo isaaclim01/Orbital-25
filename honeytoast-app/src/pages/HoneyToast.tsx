@@ -5,26 +5,38 @@ import Flight from './Flight';
 import Accommodation from './Accommodation';
 import Itinerary from './Itinerary';
 import Calendar from './Calendar';
+import './HoneyToast.css';
+import { supabase } from '../App';
 
 function HoneyToast() {
+
+  async function signOut() {
+    const { error } = await supabase.auth.signOut()
+  }
+
   return (
     <BrowserRouter>
       <div className="App">
-      
-      <div className="navbar">
-        < Navbar />
+
+        <div className="navbar">
+          < Navbar />
+        </div>
+
+        <div id="logout">
+          <button onClick={signOut}>Logout</button>
+        </div>
+
+        <div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/flight" element={<Flight />} />
+            <Route path="/accommodation" element={<Accommodation />} />
+            <Route path="/itinerary" element={<Itinerary />} />
+            <Route path="/calendar" element={<Calendar />} />
+          </Routes>
+        </div>
       </div>
-      <div>
-            <Routes>
-              <Route path="/"  element={<Home />}  />
-              <Route path="/flight"  element={<Flight />} />
-              <Route path="/accommodation" element={<Accommodation />} />
-              <Route path="/itinerary" element={<Itinerary />} />
-              <Route path="/calendar" element={<Calendar />} />
-            </Routes>   
-      </div>
-    </div>
-     </BrowserRouter>
+    </BrowserRouter>
   );
 }
 
