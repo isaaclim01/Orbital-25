@@ -8,6 +8,7 @@ import Calendar from './Calendar';
 import './HoneyToast.css';
 import { supabase } from '../App';
 import { Session } from '@supabase/supabase-js';
+import Trips from './Trips';
 
 interface HoneyToastProps {
   user: Session['user'];
@@ -34,6 +35,7 @@ function HoneyToast({user}: HoneyToastProps) {
         <div>
           <Routes>
             <Route path="/" element={<Home user={user}/>} />
+            <Route path="/trips" element={<Trips user={user}/>} />
             <Route path="/flight" element={<Flight />} />
             <Route path="/accommodation" element={<Accommodation />} />
             <Route path="/itinerary" element={<Itinerary />} />

@@ -1,12 +1,28 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { supabase } from "../App";
+import { Session } from "@supabase/supabase-js";
 
 interface TripInputProps {
-    handleAddNewTrip: (start: string, destination: string,
-        startDate: Date, endDate: Date, pax: number
-    ) => void;
+    user: Session['user'];
 }
 
-function TripInput({ handleAddNewTrip }: TripInputProps) {
+function TripInput({ user }: TripInputProps) {
+    const addNewTrip = async (start: string, destination: string,
+        startDate: Date, endDate: Date, pax: number
+    ) => {
+        const { error } = await supabase
+            .from('Trips')
+            .insert([
+                {
+                    start: start, destination: destination, start_date: startDate,
+                    end_date: endDate, pax: pax, user_id: user.id
+                },
+            ])
+            .select()
+        if (error !== null) {
+            console.error("Error adding new trip: ", error.message);
+        }
+    }
     const [start, setStart] = useState("");
     const [destination, setDestination] = useState("");
     const [startDate, setStartDate] = useState("2020-01-01");
@@ -48,7 +64,7 @@ function TripInput({ handleAddNewTrip }: TripInputProps) {
         }
 
         try {
-            await handleAddNewTrip(start, destination, new Date(startDate), new Date(endDate), pax);
+            await addNewTrip(start, destination, new Date(startDate), new Date(endDate), pax);
             setMessage("Trip added successfully!");
             // Clear form
             setStart("");
@@ -100,9 +116,7 @@ function TripInput({ handleAddNewTrip }: TripInputProps) {
                     id="pax"
                     name="No. of travellers: "
                     onChange={onInputChangePax} />
-                <input
-                    type="submit"
-                />
+                <button type="submit">Add Trip</button>
             </form>
             <div>
                 {message}

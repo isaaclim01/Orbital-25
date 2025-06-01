@@ -1,12 +1,18 @@
 import { FaHome, FaBed, FaCalendarAlt } from "react-icons/fa";
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
-import { CiViewList } from "react-icons/ci";
+import { CiViewList, CiLocationOn } from "react-icons/ci";
 
 export const SidebarData = [
     {
         title: 'Home',
         path:'/',
         icon: <FaHome size="25"/>,
+        cName: 'nav-text'
+    },
+    {
+        title: 'My Trips',
+        path:'/trips',
+        icon: <CiLocationOn size="25"/>,
         cName: 'nav-text'
     },
         {
