@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-memory_db = {"fruits": "apple, banana, orange"}
+memory_db = {"fruits": [Fruit(name="apple"), Fruit(name="banana"), Fruit(name="orange")]}
 
 @app.get("/fruits", response_model=Fruits)
 def get_fruits():

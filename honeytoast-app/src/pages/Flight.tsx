@@ -2,7 +2,6 @@ function Flight() {
   return (
     <div>
       Flight
-      
     </div>
   )
 }
