@@ -3,6 +3,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+import requests
+
+# To activate, set up venv using "source venv/bin/activate"
+# Then, run "python3 main.py"
 
 class Fruit(BaseModel):
     name: str
@@ -27,6 +31,10 @@ app.add_middleware(
 
 memory_db = {"fruits": [Fruit(name="apple"), Fruit(name="banana"), Fruit(name="orange")]}
 
+@app.get("/")
+def root():
+    return {"message": "hello world"}
+
 @app.get("/fruits", response_model=Fruits)
 def get_fruits():
     return Fruits(fruits=memory_db["fruits"])
@@ -35,7 +43,13 @@ def get_fruits():
 def add_fruit(fruit: Fruit):
     memory_db["fruits"].append(fruit)
     return fruit
-    
+
+@app.get('/weather')
+async def get_weather(city: str):
+    api_key = "a4a8f5b8104f0c14e06bef376d39fbf6"
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={api_key}"
+    response = requests.get(url)
+    city = requests.get(f"http://api.weatherapi.com/v1/current.json?key=singapore")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
