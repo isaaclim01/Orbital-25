@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import requests
+from serpapi import GoogleSearch
+
 
 # To activate, set up venv using "source venv/bin/activate"
 # Then, run "python3 main.py"
@@ -49,7 +51,25 @@ async def get_weather(city: str):
     api_key = "a4a8f5b8104f0c14e06bef376d39fbf6"
     url = f"https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid={api_key}"
     response = requests.get(url)
-    city = requests.get(f"http://api.weatherapi.com/v1/current.json?key=singapore")
+    return response.json()
+
+# I need to store the api key in the environment variable
+@app.get('/flightsearch')
+def flight_search():
+    params = {
+  "api_key": "d52e94ef2b1410c86c4710ddbd7995c51de0b3854807ab1d647a45381ed7ca98",
+  "engine": "google_flights",
+  "departure_id": "SIN",
+  "arrival_id": "AUS",
+  "hl": "en",
+  "gl": "us",
+  "currency": "USD",
+  "outbound_date": "2025-09-01",
+  "return_date": "2026-01-01"
+}
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    return results
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -2,4 +2,4 @@ fastapi
 uvicorn
 pydantic
 requests
-serpapi
+google-search-results
