@@ -65,7 +65,7 @@ def flight_search():
   "gl": "us",
   "currency": "USD",
   "outbound_date": "2025-09-01",
-  "return_date": "2026-01-01"
+  "return_date": "2025-10-10"
 }
     search = GoogleSearch(params)
     results = search.get_dict()
