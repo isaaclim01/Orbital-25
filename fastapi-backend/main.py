@@ -71,5 +71,10 @@ def flight_search():
     results = search.get_dict()
     return results
 
+# need to add post method to post to the flightsearch endpoint
+@app.post('/flightsearch')
+def flight_search_post(departure_id: str, arrival_id: str, outbound_date: str, return_date: str):
+    return 0
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
