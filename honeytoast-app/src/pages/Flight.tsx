@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import api from "../api";
 import { supabase } from "../App";
 import { Session } from "@supabase/supabase-js";
+import "./Flight.css"
 
 interface Booking {
   search_parameters: {
@@ -26,17 +27,17 @@ interface FlightProps {
 }
 
 function Flight({ user }: FlightProps) {
-  const searchNewFlight = async(booking: Booking){
+  const searchNewFlight = async(booking: Booking) => {
     // need to send to backend to POST to flight search endpoint
-    return 0
+    return 0;
   }
 
   const [type, setType] = useState("1");  // default set to round trip
   const [departure_id, setDepartureId] = useState("");
   const [arrival_id, setArrivalId] = useState("");
   
-  const [outbound_date, setOutboundDate] = useState("2025-01-01");
-  const [return_date, setReturnDate] = useState("2025-01-01");
+  const [outbound_date, setOutboundDate] = useState(new Date().toISOString().split('T')[0]); // default is today
+  const [return_date, setReturnDate] = useState(new Date().toISOString().split('T')[0]);
 
   const [adults, setAdults] = useState(1);
   const [stops, setStops] = useState(0); // default is 0: any number of stops
@@ -114,12 +115,10 @@ function Flight({ user }: FlightProps) {
         
         // await searchNewFlight(start, destination, new Date(startDate), new Date(endDate), pax);
         setMessage("Outbound flight found!");
-        // // Clear form
-        // setStart("");
-        // setDestination("");
-        // setStartDate("2020-01-01");
-        // setEndDate("2020-01-01");
-        // setPax(1);
+
+        // Should redirect to a page to select the return flight
+        // After picking return flight, should redirect to booking
+        // AND add the trip to the Trip.tsx database
     } catch (error) {
         setMessage("Unable to find trip");
     }
@@ -128,7 +127,9 @@ function Flight({ user }: FlightProps) {
   return (
      <>
         <h1>Flight Search</h1>
-            <form onSubmit={handleSubmit}>
+
+            <form id="flight-search" onSubmit={handleSubmit}>
+              <label htmlFor="type">Trip Type:  </label>
                 <input
                     type="text"
                     value={type}
@@ -136,6 +137,9 @@ function Flight({ user }: FlightProps) {
                     id="type"
                     name="Trip Type: "
                     onChange={onInputChangeType} />
+
+              <br />
+                <label htmlFor="departure">From Airport (Only IATA codes):  </label>
                 <input
                     type="text"
                     value={departure_id}
@@ -143,6 +147,8 @@ function Flight({ user }: FlightProps) {
                     id="departure"
                     name="From: "
                     onChange={onInputChangeDepartureId} />
+              <br />
+                <label htmlFor="arrival">To Airport (Only IATA codes):  </label>
                 <input
                     type="text"
                     value={arrival_id}
@@ -150,6 +156,8 @@ function Flight({ user }: FlightProps) {
                     id="arrival"
                     name="To: "
                     onChange={onInputChangeArrivalId} />
+              <br />
+                <label htmlFor="outbound_date">Outbound Date:  </label>
                 <input
                     type="date"
                     value={outbound_date}
@@ -157,6 +165,8 @@ function Flight({ user }: FlightProps) {
                     id="outbound_date"
                     name="Outbound Date: "
                     onChange={onInputChangeOutboundDate} />
+              <br />
+                <label htmlFor="return_date">Return Date:  </label>
                 <input
                     type="date"
                     value={return_date}
@@ -164,6 +174,8 @@ function Flight({ user }: FlightProps) {
                     id="return_date"
                     name="Return Date: "
                     onChange={onInputChangeReturnDate} />
+              <br />
+                <label htmlFor="adults">No. of Adults:  </label>
                 <input
                     type="number"
                     value={adults}
@@ -171,6 +183,8 @@ function Flight({ user }: FlightProps) {
                     id="adults"
                     name="No. of adults: "
                     onChange={onInputChangeAdults} />
+              <br />
+                <label htmlFor="stops">No. of Stops:  </label>
                 <input
                     type="number"
                     value={stops}
@@ -178,6 +192,8 @@ function Flight({ user }: FlightProps) {
                     id="stops"
                     name="No. of stops: "
                     onChange={onInputChangeStops} />
+              <br />
+                <label htmlFor="currency">Currency Abbrev.:  </label>
                 <input
                     type="text"
                     value={currency}
@@ -185,6 +201,8 @@ function Flight({ user }: FlightProps) {
                     id="currency"
                     name="Currency: "
                     onChange={onInputChangeCurrency} />
+              <br />
+                <label htmlFor="sort_by">Sort By:  </label>
                 <input
                     type="text"
                     value={sort_by}
@@ -192,6 +210,8 @@ function Flight({ user }: FlightProps) {
                     id="sort_by"
                     name="Sort By: "
                     onChange={onInputChangeSortBy} />
+              <br />
+                <label htmlFor="max_price">Max Price:  </label>
                 <input
                     type="number"
                     value={max_price}
@@ -199,6 +219,7 @@ function Flight({ user }: FlightProps) {
                     id="max_price"
                     name="Max Price: "
                     onChange={onInputChangeMaxPrice} />
+              <br />
                 <button type="submit">Search Flight</button>
             </form>
             <div>
