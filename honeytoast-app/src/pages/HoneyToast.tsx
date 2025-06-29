@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import Flight from './Flight';
-import Accommodation from './Accommodation';
+import List from './hotelSearch/List';
 import Itinerary from './Itinerary';
 import Calendar from './Calendar';
 import './HoneyToast.css';
@@ -37,7 +37,7 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/" element={<Home user={user}/>} />
             <Route path="/trips" element={<Trips user={user}/>} />
             <Route path="/flight" element={<Flight user={user}/>} />
-            <Route path="/accommodation" element={<Accommodation />} />
+            <Route path="/accommodation" element={<List />} />
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
           </Routes>
