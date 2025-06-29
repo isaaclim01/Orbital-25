@@ -1,14 +1,11 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import api from "../api";
-import { supabase } from "../App";
+import { useNavigate } from "react-router-dom";
+import api from "../../api";
+import { supabase } from "../../App";
 import { Session } from "@supabase/supabase-js";
 import "./Flight.css"
 
 interface Booking {
-  search_parameters: {
-    engine: "google_flights";
-    hl: "en";
-    gl: "us";
     type: string;
     departure_id: string;
     arrival_id: string;
@@ -19,7 +16,6 @@ interface Booking {
     currency: string;
     sort_by: string;
     max_price: number;
-  };
 }
 
 interface FlightProps {
@@ -27,9 +23,36 @@ interface FlightProps {
 }
 
 function Flight({ user }: FlightProps) {
-  const searchNewFlight = async(booking: Booking) => {
+  const searchNewFlight = async(
+    type: string,
+    departure_id: string,
+    arrival_id: string,
+    outbound_date: string,
+    return_date: string,
+    adults: number,
+    stops: number,
+    currency: string,
+    sort_by: string,
+    max_price: number) => {
     // need to send to backend to POST to flight search endpoint
-    return 0;
+    const response = await api.post("/flightsearch", {
+        type,
+        departure_id,
+        arrival_id,
+        outbound_date,
+        return_date,
+        adults,
+        stops,
+        currency,
+        sort_by,
+        max_price
+    })
+
+    if (response.data.hasOwnProperty("error")) {
+        throw new Error(response.data["error"]);
+    }
+
+    return response.data;
   }
 
   const [type, setType] = useState("1");  // default set to round trip
@@ -44,6 +67,8 @@ function Flight({ user }: FlightProps) {
   const [currency, setCurrency] = useState("USD");
   const [sort_by, setSortBy] = useState("1"); // default is Top Flights
   const [max_price, setMaxPrice] = useState(100000000); // default is unlimited
+  
+  const navigate = useNavigate();
 
   const onInputChangeType = (e: ChangeEvent<HTMLInputElement>) => {
       setType(e.target.value);
@@ -113,14 +138,32 @@ function Flight({ user }: FlightProps) {
 
     try {
         
-        // await searchNewFlight(start, destination, new Date(startDate), new Date(endDate), pax);
-        setMessage("Outbound flight found!");
+        const response = await searchNewFlight(
+            type,
+            departure_id,
+            arrival_id,
+            outbound_date,
+            return_date,
+            adults,
+            stops,
+            currency,
+            sort_by,
+            max_price
+        );
+
+        setMessage("Outbound flight found! Showing possible selections...");
+        navigate("/outbound-flight-selection", 
+        {
+          state: {
+            api_response: response
+          }
+        });
 
         // Should redirect to a page to select the return flight
         // After picking return flight, should redirect to booking
         // AND add the trip to the Trip.tsx database
     } catch (error) {
-        setMessage("Unable to find trip");
+        setMessage("Unable to find flight");
     }
   }
 
@@ -219,6 +262,7 @@ function Flight({ user }: FlightProps) {
                     id="max_price"
                     name="Max Price: "
                     onChange={onInputChangeMaxPrice} />
+              <br />
               <br />
                 <button type="submit">Search Flight</button>
             </form>

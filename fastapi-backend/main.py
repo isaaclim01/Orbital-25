@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -73,8 +73,29 @@ def flight_search():
 
 # need to add post method to post to the flightsearch endpoint
 @app.post('/flightsearch')
-def flight_search_post(departure_id: str, arrival_id: str, outbound_date: str, return_date: str):
-    return 0
+async def flight_search_post(request: Request):
+    args_body = await request.json()
+
+    params = {
+        "api_key": "d52e94ef2b1410c86c4710ddbd7995c51de0b3854807ab1d647a45381ed7ca98",
+        "engine": "google_flights",
+        "hl": "en",
+        "gl": "us",
+        "type": args_body["type"],
+        "departure_id": args_body["departure_id"],
+        "arrival_id": args_body["arrival_id"],
+        "outbound_date": args_body["outbound_date"],
+        "return_date": args_body["return_date"],
+        "adults": args_body["adults"],
+        "stops": args_body["stops"],
+        "currency": args_body["currency"],
+        "sort_by": args_body["sort_by"],
+        "max_price": args_body["max_price"],
+    }
+    
+    search = GoogleSearch(params)
+    results = search.get_dict()
+    return results #should return departure flight info & departure ID
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

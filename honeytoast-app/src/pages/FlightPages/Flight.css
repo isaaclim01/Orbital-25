@@ -5,15 +5,19 @@ h1 {
 }
 
 #flight-search {
+    text-align: center;
     display: block;
     margin: 0 auto;
-    /* text-align: center;
-    font-size: xx-large;
+}
+
+label {
+    text-align: center;
+    font-size: medium;
     font-family: 'Times New Roman', Times, serif;
-    margin: 7px; */
 }
 
 input {
+    text-align: center;
     width: 100px;
     height: 15px;
     margin: 5px;

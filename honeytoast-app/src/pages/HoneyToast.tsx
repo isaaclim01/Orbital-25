@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Home';
-import Flight from './Flight';
+import Flight from './FlightPages/Flight';
 import Accommodation from './Accommodation';
 import Itinerary from './Itinerary';
 import Calendar from './Calendar';
@@ -9,6 +9,7 @@ import './HoneyToast.css';
 import { supabase } from '../App';
 import { Session } from '@supabase/supabase-js';
 import Trips from './Trips';
+import OutboundFlightSelection from './FlightPages/OutboundFlightSelection';
 
 interface HoneyToastProps {
   user: Session['user'];
@@ -40,6 +41,8 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/accommodation" element={<Accommodation />} />
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/outbound-flight-selection" element={<OutboundFlightSelection />} />
+
           </Routes>
         </div>
       </div>
