@@ -1,7 +1,6 @@
 import express from "express"
 import 'dotenv/config'
 import { createClient } from "@supabase/supabase-js";
-import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.js";
 import hotelsRoute from "./routes/hotels.js";
