@@ -3,8 +3,15 @@
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  width: 100%;
+  padding: 0 20px; /* Add horizontal padding */
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1; /* Below navbar when it overlays */
 }
 
+
+/* If your navbar is fixed, you might also want to add: */
 .hotelWrapper {
   width: 100%;
   max-width: 1024px;
@@ -12,6 +19,21 @@
   flex-direction: column;
   gap: 10px;
   position: relative;
+  margin: 0 auto; /* Center horizontally */
+}
+
+
+/* For the slider overlay (if you have a fixed navbar) */
+.slider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.613);
+  z-index: 500; /* Below active navbar but above content */
+  display: flex;
+  align-items: center;
 }
 
 .bookNow {
@@ -107,18 +129,6 @@
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
-}
-
-.slider{
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.613);
-  z-index: 999;
-  display: flex;
-  align-items: center;
 }
 
 .sliderWrapper{
