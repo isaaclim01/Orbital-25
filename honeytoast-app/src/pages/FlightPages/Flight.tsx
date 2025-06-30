@@ -1,22 +1,21 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
-import { supabase } from "../../App";
 import { Session } from "@supabase/supabase-js";
 import "./Flight.css"
 
-interface Booking {
-    type: string;
-    departure_id: string;
-    arrival_id: string;
-    outbound_date: string;
-    return_date: string;
-    adults: number;
-    stops: number;
-    currency: string;
-    sort_by: string;
-    max_price: number;
-}
+// interface Booking {
+//     type: string;
+//     departure_id: string;
+//     arrival_id: string;
+//     outbound_date: string;
+//     return_date: string;
+//     adults: number;
+//     stops: number;
+//     currency: string;
+//     sort_by: string;
+//     max_price: number;
+// }
 
 interface FlightProps {
   user: Session['user'];
@@ -36,17 +35,19 @@ function Flight({ user }: FlightProps) {
     max_price: number) => {
     // need to send to backend to POST to flight search endpoint
     const response = await api.post("/flightsearch", {
-        type,
-        departure_id,
-        arrival_id,
-        outbound_date,
-        return_date,
-        adults,
-        stops,
-        currency,
-        sort_by,
-        max_price
+        type: type,
+        departure_id: departure_id,
+        arrival_id: arrival_id,
+        outbound_date: outbound_date,
+        return_date: return_date,
+        adults: adults,
+        stops: stops,
+        currency: currency,
+        sort_by: sort_by,
+        max_price: max_price
     })
+
+    console.log("Response:", JSON.stringify(response.data, null, 2));
 
     if (response.data.hasOwnProperty("error")) {
         throw new Error(response.data["error"]);
@@ -74,10 +75,10 @@ function Flight({ user }: FlightProps) {
       setType(e.target.value);
   }
   const onInputChangeDepartureId = (e: ChangeEvent<HTMLInputElement>) => {
-      setDepartureId(e.target.value);
+      setDepartureId(e.target.value.toUpperCase());
   }
    const onInputChangeArrivalId = (e: ChangeEvent<HTMLInputElement>) => {
-      setArrivalId(e.target.value);
+      setArrivalId(e.target.value.toUpperCase());
   }
    const onInputChangeOutboundDate = (e: ChangeEvent<HTMLInputElement>) => {
       setOutboundDate(e.target.value);
@@ -101,6 +102,10 @@ function Flight({ user }: FlightProps) {
       setMaxPrice(e.target.valueAsNumber);
   }
   
+  async function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -112,11 +117,16 @@ function Flight({ user }: FlightProps) {
         return;
     }
 
+    if (departure_id.length !== 3 || arrival_id.length !== 3) {
+        setMessage("Departure and Arrival IDs must be 3-letter IATA codes");
+        return;
+    }
+
     const now = new Date();
     const outbound = new Date(outbound_date);
     const ret = new Date(return_date);
 
-    if (now > outbound && now > ret) {
+    if (now > outbound || now > ret) {
         setMessage("Outbound and Return dates must be in the future");
         return;
     }
@@ -136,6 +146,8 @@ function Flight({ user }: FlightProps) {
       return;
     }
 
+    console.log(outbound_date, return_date, adults, stops, currency, sort_by, max_price);
+
     try {
         
         const response = await searchNewFlight(
@@ -152,6 +164,9 @@ function Flight({ user }: FlightProps) {
         );
 
         setMessage("Outbound flight found! Showing possible selections...");
+        
+        await sleep(2000); // wait for 2 seconds before redirecting
+
         navigate("/outbound-flight-selection", 
         {
           state: {
@@ -163,6 +178,7 @@ function Flight({ user }: FlightProps) {
         // After picking return flight, should redirect to booking
         // AND add the trip to the Trip.tsx database
     } catch (error) {
+        console.error("Error searching for flight: ", error);
         setMessage("Unable to find flight");
     }
   }
@@ -266,8 +282,11 @@ function Flight({ user }: FlightProps) {
               <br />
                 <button type="submit">Search Flight</button>
             </form>
-            <div>
+            <br />
+            <div className="message">
+              <strong>
                 {message}
+              </strong>
             </div>
         </>
   )

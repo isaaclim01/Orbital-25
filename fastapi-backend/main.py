@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import Dict, List
 import requests
 from serpapi import GoogleSearch
 
@@ -65,8 +65,12 @@ def flight_search():
   "gl": "us",
   "currency": "USD",
   "outbound_date": "2025-09-01",
-  "return_date": "2025-10-10"
-}
+  "return_date": "2025-10-10",
+    "type": "1",
+  "adults": "1",
+  "sort_by": "1",
+  "stops": "0"
+    }
     search = GoogleSearch(params)
     results = search.get_dict()
     return results

@@ -41,7 +41,7 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/accommodation" element={<Accommodation />} />
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
-            <Route path="/outbound-flight-selection" element={<OutboundFlightSelection />} />
+            <Route path="/outbound-flight-selection" element={<OutboundFlightSelection user={user}/>} />
 
           </Routes>
         </div>
