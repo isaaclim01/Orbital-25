@@ -26,6 +26,15 @@ input {
     font-family: 'Times New Roman', Times, serif;
 }
 
+select {
+    text-align: center;
+    font-size: medium;
+    font-family: 'Times New Roman', Times, serif;
+    width: 130px;
+    height: 29px;
+    margin: 5px;
+}
+
 .message {
   text-align: center;
   font-size: medium;

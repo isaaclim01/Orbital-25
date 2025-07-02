@@ -67,11 +67,11 @@ function Flight({ user }: FlightProps) {
   const [stops, setStops] = useState(0); // default is 0: any number of stops
   const [currency, setCurrency] = useState("USD");
   const [sort_by, setSortBy] = useState("1"); // default is Top Flights
-  const [max_price, setMaxPrice] = useState(100000000); // default is unlimited
-  
+  const [max_price, setMaxPrice] = useState<number>(); // default is unlimited
+
   const navigate = useNavigate();
 
-  const onInputChangeType = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInputChangeType = (e: ChangeEvent<HTMLSelectElement>) => {
       setType(e.target.value);
   }
   const onInputChangeDepartureId = (e: ChangeEvent<HTMLInputElement>) => {
@@ -89,13 +89,13 @@ function Flight({ user }: FlightProps) {
    const onInputChangeAdults = (e: ChangeEvent<HTMLInputElement>) => {
       setAdults(e.target.valueAsNumber);
   }
-   const onInputChangeStops = (e: ChangeEvent<HTMLInputElement>) => {
-      setStops(e.target.valueAsNumber);
+   const onInputChangeStops = (e: ChangeEvent<HTMLSelectElement>) => {
+      setStops(Number(e.target.value));
   }
   const onInputChangeCurrency = (e: ChangeEvent<HTMLInputElement>) => {
       setCurrency(e.target.value);
   }
-  const onInputChangeSortBy = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInputChangeSortBy = (e: ChangeEvent<HTMLSelectElement>) => {
       setSortBy(e.target.value);
   }
   const onInputChangeMaxPrice = (e: ChangeEvent<HTMLInputElement>) => {
@@ -141,15 +141,16 @@ function Flight({ user }: FlightProps) {
         return;
     }
 
-    if (max_price <= 0) {
-      setMessage("Max Price cannot be $0 or less")
-      return;
+    if (max_price !== undefined && Number(max_price) <= 0) {
+        setMessage("Max Price must be a positive number");
+        return;
     }
 
     console.log(outbound_date, return_date, adults, stops, currency, sort_by, max_price);
 
+    setMessage("Searching for outbound flight...");
+
     try {
-        
         const response = await searchNewFlight(
             type,
             departure_id,
@@ -160,18 +161,17 @@ function Flight({ user }: FlightProps) {
             stops,
             currency,
             sort_by,
-            max_price
+            max_price ?? 10000000000
         );
 
         setMessage("Outbound flight found! Showing possible selections...");
-        
-        await sleep(2000); // wait for 2 seconds before redirecting
 
-        navigate("/outbound-flight-selection", 
-        {
-          state: {
-            api_response: response
-          }
+        await sleep(2000).then(() => {
+          navigate("/outbound-flight-selection", {
+            state: {
+              api_response: response
+            }
+          });
         });
 
         // Should redirect to a page to select the return flight
@@ -179,24 +179,27 @@ function Flight({ user }: FlightProps) {
         // AND add the trip to the Trip.tsx database
     } catch (error) {
         console.error("Error searching for flight: ", error);
-        setMessage("Unable to find flight");
+        setMessage("Unable to find flight, try to change the dates or other parameters.");
     }
   }
 
   return (
      <>
         <h1>Flight Search</h1>
-
             <form id="flight-search" onSubmit={handleSubmit}>
-              <label htmlFor="type">Trip Type:  </label>
-                <input
-                    type="text"
-                    value={type}
-                    required
-                    id="type"
-                    name="Trip Type: "
-                    onChange={onInputChangeType} />
 
+              <label htmlFor="type">Trip Type:  </label>
+              <select
+                required
+                value={type}
+                id="type"
+                name="TripType"
+                onChange={onInputChangeType}>
+
+                <option value="">-- Pick an option --</option>
+                <option value="1">Round Trip</option>
+                <option value="2">One Way</option>
+              </select>
               <br />
                 <label htmlFor="departure">From Airport (Only IATA codes):  </label>
                 <input
@@ -204,7 +207,8 @@ function Flight({ user }: FlightProps) {
                     value={departure_id}
                     required
                     id="departure"
-                    name="From: "
+                    name="From"
+                    placeholder="eg. SIN"
                     onChange={onInputChangeDepartureId} />
               <br />
                 <label htmlFor="arrival">To Airport (Only IATA codes):  </label>
@@ -213,7 +217,7 @@ function Flight({ user }: FlightProps) {
                     value={arrival_id}
                     required
                     id="arrival"
-                    name="To: "
+                    name="To"
                     onChange={onInputChangeArrivalId} />
               <br />
                 <label htmlFor="outbound_date">Outbound Date:  </label>
@@ -222,7 +226,7 @@ function Flight({ user }: FlightProps) {
                     value={outbound_date}
                     required
                     id="outbound_date"
-                    name="Outbound Date: "
+                    name="Outbound Date"
                     onChange={onInputChangeOutboundDate} />
               <br />
                 <label htmlFor="return_date">Return Date:  </label>
@@ -231,7 +235,7 @@ function Flight({ user }: FlightProps) {
                     value={return_date}
                     required
                     id="return_date"
-                    name="Return Date: "
+                    name="Return Date"
                     onChange={onInputChangeReturnDate} />
               <br />
                 <label htmlFor="adults">No. of Adults:  </label>
@@ -240,17 +244,23 @@ function Flight({ user }: FlightProps) {
                     value={adults}
                     required
                     id="adults"
-                    name="No. of adults: "
+                    name="No of adults"
                     onChange={onInputChangeAdults} />
               <br />
                 <label htmlFor="stops">No. of Stops:  </label>
-                <input
-                    type="number"
-                    value={stops}
-                    required
-                    id="stops"
-                    name="No. of stops: "
-                    onChange={onInputChangeStops} />
+              <select
+                required
+                value={stops}
+                id="stops"
+                name="No of stops"
+                onChange={onInputChangeStops}>
+
+                <option value="">-- Pick an option --</option>
+                <option value="0">Any number</option>
+                <option value="1">Nonstop</option>
+                <option value="2">1 Stop or fewer</option>
+                <option value="3">2 Stops or fewer</option>
+              </select>
               <br />
                 <label htmlFor="currency">Currency Abbrev.:  </label>
                 <input
@@ -258,25 +268,41 @@ function Flight({ user }: FlightProps) {
                     value={currency}
                     required
                     id="currency"
-                    name="Currency: "
+                    name="Currency"
+                    list="currency-list"
                     onChange={onInputChangeCurrency} />
+                <datalist id="currency-list">
+                  <option value="USD" />
+                  <option value="SGD" />
+                  <option value="EUR" />
+                  <option value="JPY" />
+                  <option value="GBP" />
+                  <option value="CNY" />
+                </datalist>
               <br />
                 <label htmlFor="sort_by">Sort By:  </label>
-                <input
-                    type="text"
-                    value={sort_by}
-                    required
-                    id="sort_by"
-                    name="Sort By: "
-                    onChange={onInputChangeSortBy} />
+              <select
+                required
+                value={sort_by}
+                id="sort_by"
+                name="Sort By"
+                onChange={onInputChangeSortBy}>
+
+                <option value="">-- Pick an option --</option>
+                <option value="1">Top flights</option>
+                <option value="2">Price</option>
+                <option value="3">Departure time</option>
+                <option value="4">Arrival time</option>
+                <option value="5">Duration</option>
+              </select>
               <br />
                 <label htmlFor="max_price">Max Price:  </label>
                 <input
                     type="number"
                     value={max_price}
-                    required
                     id="max_price"
-                    name="Max Price: "
+                    name="Max Price"
+                    placeholder="eg. 3000"
                     onChange={onInputChangeMaxPrice} />
               <br />
               <br />

@@ -25,7 +25,7 @@ function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
         <h2>No Flights Found</h2>
         <p>Sorry, we couldn't find any flights matching your criteria.</p>
       </div>
-    );
+    )
   }
 
   // Info needed: 1) Flight Name, Dates and Times, 2) Price, 3) Stops, 4) Airline
