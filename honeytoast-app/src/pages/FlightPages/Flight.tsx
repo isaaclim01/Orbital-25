@@ -4,48 +4,29 @@ import api from "../../api";
 import { Session } from "@supabase/supabase-js";
 import "./Flight.css"
 
-// interface Booking {
-//     type: string;
-//     departure_id: string;
-//     arrival_id: string;
-//     outbound_date: string;
-//     return_date: string;
-//     adults: number;
-//     stops: number;
-//     currency: string;
-//     sort_by: string;
-//     max_price: number;
-// }
+export interface Booking {
+    type: string;
+    departure_id: string;
+    arrival_id: string;
+    outbound_date: string;
+    return_date: string;
+    adults: number;
+    stops: number;
+    currency: string;
+    sort_by: string;
+    max_price: number;
+    departure_token?: string;
+    booking_token?: string;
+}
 
 interface FlightProps {
   user: Session['user'];
 }
 
 function Flight({ user }: FlightProps) {
-  const searchNewFlight = async(
-    type: string,
-    departure_id: string,
-    arrival_id: string,
-    outbound_date: string,
-    return_date: string,
-    adults: number,
-    stops: number,
-    currency: string,
-    sort_by: string,
-    max_price: number) => {
+  const searchNewFlight = async(booking : Booking) => {
     // need to send to backend to POST to flight search endpoint
-    const response = await api.post("/flightsearch", {
-        type: type,
-        departure_id: departure_id,
-        arrival_id: arrival_id,
-        outbound_date: outbound_date,
-        return_date: return_date,
-        adults: adults,
-        stops: stops,
-        currency: currency,
-        sort_by: sort_by,
-        max_price: max_price
-    })
+    const response = await api.post("/flightsearch", booking);
 
     console.log("Response:", JSON.stringify(response.data, null, 2));
 
@@ -151,7 +132,7 @@ function Flight({ user }: FlightProps) {
     setMessage("Searching for outbound flight...");
 
     try {
-        const response = await searchNewFlight(
+        const booking: Booking = {
             type,
             departure_id,
             arrival_id,
@@ -161,14 +142,17 @@ function Flight({ user }: FlightProps) {
             stops,
             currency,
             sort_by,
-            max_price ?? 10000000000
-        );
+            max_price: max_price ?? 10000000000
+        }
+
+        const response = await searchNewFlight(booking);
 
         setMessage("Outbound flight found! Showing possible selections...");
 
         await sleep(2000).then(() => {
           navigate("/outbound-flight-selection", {
             state: {
+              booking: booking,
               api_response: response
             }
           });

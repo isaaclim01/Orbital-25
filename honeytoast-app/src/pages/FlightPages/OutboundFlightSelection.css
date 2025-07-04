@@ -1,0 +1,23 @@
+* {
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+h3 {
+    font-weight: normal;
+}
+
+td, th {
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0 auto;
+    padding: 7px 20px;
+}
+
+table {
+    width: 80%;
+}
+
+thead {
+    font-size: 17px;
+}
