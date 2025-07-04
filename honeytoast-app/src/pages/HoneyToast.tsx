@@ -11,6 +11,8 @@ import { Session } from '@supabase/supabase-js';
 import Trips from './Trips';
 import OutboundFlightSelection from './FlightPages/OutboundFlightSelection';
 import Hotel from './hotel/Hotel';
+import ReturnFlightSelection from './FlightPages/ReturnFlightSelection';
+import FlightConfirmation from './FlightPages/FlightConfirmation';
 
 interface HoneyToastProps {
   user: Session['user'];
@@ -44,6 +46,8 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/outbound-flight-selection" element={<OutboundFlightSelection user={user}/>} />
+            <Route path="/return-flight-selection" element={<ReturnFlightSelection user={user}/>} />
+            <Route path="/flight-confirmation" element={<FlightConfirmation user={user}/>} />
 
           </Routes>
         </div>

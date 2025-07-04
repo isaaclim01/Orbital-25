@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Dict, List
+from typing import Dict, List, Optional
 import requests
 from serpapi import GoogleSearch
 
@@ -15,6 +15,19 @@ class Fruit(BaseModel):
 
 class Fruits(BaseModel):
     fruits: List[Fruit]
+
+class Booking(BaseModel):
+    type: str
+    departure_id: str
+    arrival_id: str
+    outbound_date: str
+    return_date: str
+    adults: int
+    stops: int
+    currency: str
+    max_price: int
+    departure_token: Optional[str] = None  # Optional field for departure flight token
+    booking_token: Optional[str] = None  # Optional field for booking flight token
 
 app = FastAPI()
 
@@ -77,25 +90,24 @@ def flight_search():
 
 # need to add post method to post to the flightsearch endpoint
 @app.post('/flightsearch')
-async def flight_search_post(request: Request):
-    args_body = await request.json()
+async def flight_search_post(booking: Booking):
 
-    params = {
+    if booking.booking_token is not None:
+        params = {
         "api_key": "d52e94ef2b1410c86c4710ddbd7995c51de0b3854807ab1d647a45381ed7ca98",
         "engine": "google_flights",
         "hl": "en",
         "gl": "us",
-        "type": args_body["type"],
-        "departure_id": args_body["departure_id"],
-        "arrival_id": args_body["arrival_id"],
-        "outbound_date": args_body["outbound_date"],
-        "return_date": args_body["return_date"],
-        "adults": args_body["adults"],
-        "stops": args_body["stops"],
-        "currency": args_body["currency"],
-        "sort_by": args_body["sort_by"],
-        "max_price": args_body["max_price"],
+        **booking.dict(exclude="departure_token", exclude_unset=True, exclude_none=True)
     }
+    else:  
+        params = {
+            "api_key": "d52e94ef2b1410c86c4710ddbd7995c51de0b3854807ab1d647a45381ed7ca98",
+            "engine": "google_flights",
+            "hl": "en",
+            "gl": "us",
+            **booking.dict(exclude_unset=True, exclude_none=True),
+        }
     
     search = GoogleSearch(params)
     results = search.get_dict()
