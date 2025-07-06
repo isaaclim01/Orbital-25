@@ -11,7 +11,7 @@ interface TripsProps {
 
 function Trips({ user }: TripsProps) {
 
-    const [trips, setTrips] = useState<Trip[]>([]);
+  const [trips, setTrips] = useState<Trip[]>([]);
 
   const getUsername = () => {
     const atIndex = user.email?.indexOf('@');

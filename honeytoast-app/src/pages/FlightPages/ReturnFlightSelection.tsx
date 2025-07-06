@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Session } from "@supabase/supabase-js";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import { Booking } from './Flight';
 import { FlightDetails } from './OutboundFlightSelection';
 
 // For testing purposes
-import { return_api_response } from './apiresponse';
+// import { return_api_response } from './apiresponse';
 import "./ReturnFlightSelection.css";
+import api from '../../api';
 
 interface ReturnFlightSelectionProps {
   user: Session['user'];
@@ -20,19 +21,20 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
     departureFlightDetails: FlightDetails;
   }
   
+  const navigate = useNavigate();
+  const [message, setMessage] = useState<string | undefined>();
+
   const booking = state?.booking;
-  // const apiResponse = state?.api_response;
+  const apiResponse = state?.api_response;
   const departureFlightDetails = state?.departureFlightDetails;
 
-  console.log("RETURN FLIGHT Booking:", JSON.stringify(booking, null, 2));
-  console.log("RETURN FLIGHT Flight Details:", JSON.stringify(departureFlightDetails, null, 2));
+  // console.log("RETURN FLIGHT Booking:", JSON.stringify(booking, null, 2));
+  console.log("Return Flight Search API Response:", JSON.stringify(apiResponse, null, 2));
+  // console.log("RETURN FLIGHT Flight Details:", JSON.stringify(departureFlightDetails, null, 2));
 
-  const apiResponse = return_api_response;
+  // const apiResponse = return_api_response;
 
-  // console.log("Return Flight Search Booking:", JSON.stringify(booking, null, 2));
-  // console.log("Return Flight Search API Response:", JSON.stringify(apiResponse, null, 2));
-
-  if (apiResponse === undefined || apiResponse === null) {
+  if (apiResponse === undefined || apiResponse === null || booking === undefined || departureFlightDetails === undefined) {
     return (
       <div>
         <h2>Error</h2>
@@ -61,6 +63,59 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
         <p>Please select a departure flight before proceeding.</p>
       </div>
     )
+  }
+
+  // Some API responses might not have "best_flights" but have "other_flights"
+  const flightsToDisplay = apiResponse["best_flights"] || apiResponse["other_flights"];
+
+  const searchNewFlight = async(booking : Booking) => {
+    // need to send to backend to POST to flight search endpoint
+    console.log("Return flight selection:", JSON.stringify(booking, null, 2));
+
+    const response = await api.post("/flightsearch", booking);
+
+    // console.log("Flight confirmation response:", JSON.stringify(response.data, null, 2));
+
+    if (response.data.hasOwnProperty("error")) {
+        throw new Error(response.data["error"]);
+    }
+    return response.data;
+  }
+
+  async function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  const bookFlight = async(bookingToken: string) => {
+    setMessage("Please wait while we summarise the flight details...");
+
+    const updatedBooking: Booking = {
+      ...booking,
+      booking_token: bookingToken
+    }
+
+    // console.log("Updated Booking for Return Flight Search:", JSON.stringify(updatedBooking, null, 2));
+
+    try {
+      const FlightSummaryApiResponse = await searchNewFlight(updatedBooking);
+      // const FlightSummaryApiResponse = "This is a test response from ReturnFlightSelection";
+
+      console.log("Flight Summary API Response:", JSON.stringify(FlightSummaryApiResponse, null, 2));
+
+      setMessage("Return flight selected! Summarising booking details...");
+
+      await sleep(2000).then(() => {
+        navigate("/flight-confirmation", {
+          state: {
+            booking: updatedBooking,
+            api_response: FlightSummaryApiResponse,
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error searching for new flight:", error);
+      setMessage("Error retrieving flight information.");
+    }
   }
 
   return (
@@ -113,7 +168,7 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
                 </tr>
             </thead>
             <tbody>
-               {apiResponse["best_flights"].map((flight: any, index: number) => {
+               {flightsToDisplay.map((flight: any, index: number) => {
                 return (<tr key={index}>
                   <td>{flight["flights"][0]["flight_number"]}</td>
                   <td><strong>{flight["flights"][0]["departure_airport"]["name"]}</strong> <br/> {flight["flights"][0]["departure_airport"]["time"]}</td>
@@ -121,13 +176,14 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
                   <td>{flight.price} USD </td>
                   <td>{flight["flights"].length}</td>
                   <td>{flight["flights"][0]["airline"]}</td>
-                  {/* function has to take in the departure token onClick={() => bookFlight(flight["departure_token"])}*/}
-                  <td><button>Book</button></td>
+                  {/* function has to take in the booking token onClick={() => bookFlight(flight["booking_token"])}*/}
+                  <td><button onClick={() => bookFlight(flight["booking_token"])}>Book</button></td>
                 </tr>)
                })}
             </tbody>
         </table>
       </div>
+      <div>{message}</div>
     </>
   )
 }

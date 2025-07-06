@@ -4,7 +4,7 @@ import {Booking} from "./Flight";
 import "./OutboundFlightSelection.css";
 
 // just for testing purposes
-import { api_response } from "./apiresponse";
+// import { api_response } from "./apiresponse";
 import { useState } from "react";
 import api from "../../api";
 import { AsyncLocalStorage } from "node:async_hooks";
@@ -27,30 +27,31 @@ export interface FlightDetails {
 function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
   const [message, setMessage] = useState<string | undefined>(); 
   
-  // const location = useLocation();
-  // const state = location.state as {
-  //   booking: Booking;
-  //   api_response: any;
-  // }
-
-  // const apiResponse = state?.api_response;
-
-  // console.log("API Response:", JSON.stringify(apiResponse, null, 2));
-
-  const booking : Booking = {
-    "type": "1",
-    "departure_id": "SIN",
-    "arrival_id": "AUS",
-    "outbound_date": "2025-09-09",
-    "return_date": "2025-09-19",
-    "adults": 1,
-    "stops": 0,
-    "currency": "USD",
-    "sort_by": "1",
-    "max_price": 10000000000
+  const location = useLocation();
+  const state = location.state as {
+    booking: Booking;
+    api_response: any;
   }
 
-  const apiResponse = api_response;
+  const apiResponse = state?.api_response;
+  const booking : Booking  = state?.booking;
+ 
+  console.log("API Response:", JSON.stringify(apiResponse, null, 2));
+
+  // const booking : Booking = {
+  //   "type": "1",
+  //   "departure_id": "SIN",
+  //   "arrival_id": "AUS",
+  //   "outbound_date": "2025-09-09",
+  //   "return_date": "2025-09-19",
+  //   "adults": 1,
+  //   "stops": 0,
+  //   "currency": "USD",
+  //   "sort_by": "1",
+  //   "max_price": 10000000000
+  // }
+
+  // const apiResponse = api_response;
   const navigate = useNavigate();
 
   if (apiResponse === undefined || apiResponse === null) {
@@ -68,7 +69,7 @@ function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
         <p>Possible issues: Outbound and Return date are too far apart (eg. more than 1 month)</p>
       </div>
     )
-  } else if (!apiResponse.hasOwnProperty("best_flights")) {
+  } else if (!apiResponse.hasOwnProperty("best_flights") && !apiResponse.hasOwnProperty("other_flights")) {
     return (
       <div>
         <h2>No Flights Found</h2>
@@ -76,6 +77,9 @@ function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
       </div>
     )
   }
+
+  // Some API responses might not have "best_flights" but have "other_flights"
+  const flightsToDisplay = apiResponse["best_flights"] || apiResponse["other_flights"];
 
   const searchNewFlight = async(booking : Booking, ) => {
     // need to send to backend to POST to flight search endpoint
@@ -103,20 +107,18 @@ function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
       departure_token: departureToken
     }
 
-    console.log(updatedBooking);
-
     try {
-      // const newApiResponse = await searchNewFlight(updatedBooking);
-      const newApiResponse = "This is a test response";
+      const newApiResponse = await searchNewFlight(updatedBooking);
+      // const newApiResponse = "This is a test response";
 
       setMessage("Return flight found! Showing possible selections...");
 
       await sleep(2000).then(() => {
         navigate("/return-flight-selection", {
           state: {
-            booking: updatedBooking,
+            booking: booking,
             api_response: newApiResponse,
-            flightDetails: flightDetails
+            departureFlightDetails: flightDetails
           }
         });
       });
@@ -150,12 +152,12 @@ function OutboundFlightSelection({ user }: OutboundFlightSelectionProps) {
                 </tr>
             </thead>
             <tbody>
-               {apiResponse["best_flights"].map((flight: any, index: number) => {
+               {flightsToDisplay.map((flight: any, index: number) => {
                 return (<tr key={index}>
                   <td>{flight["flights"][0]["flight_number"]}</td>
                   <td><strong>{flight["flights"][0]["departure_airport"]["name"]}</strong> <br/> {flight["flights"][0]["departure_airport"]["time"]}</td>
                   <td><strong>{flight["flights"][flight["flights"].length - 1]["arrival_airport"]["name"]}</strong> <br/> {flight["flights"][flight["flights"].length - 1]["arrival_airport"]["time"]}</td>
-                  <td>{flight.price} USD </td>
+                  <td>{flight.price ? `${booking["currency"]} ${flight.price}` : <span>N/A</span>} </td>
                   <td>{flight["flights"].length}</td>
                   <td>{flight["flights"][0]["airline"]}</td>
                   {/* function has to take in the departure token */}

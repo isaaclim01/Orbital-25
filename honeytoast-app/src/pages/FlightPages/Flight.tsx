@@ -157,10 +157,6 @@ function Flight({ user }: FlightProps) {
             }
           });
         });
-
-        // Should redirect to a page to select the return flight
-        // After picking return flight, should redirect to booking
-        // AND add the trip to the Trip.tsx database
     } catch (error) {
         console.error("Error searching for flight: ", error);
         setMessage("Unable to find flight, try to change the dates or other parameters.");
