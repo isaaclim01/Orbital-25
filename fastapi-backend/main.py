@@ -36,6 +36,7 @@ class BookingRequest(BaseModel):
 app = FastAPI()
 
 origin = [
+    "https://orbital-25-five.vercel.app",
     "http://localhost:3000"
 ]
 

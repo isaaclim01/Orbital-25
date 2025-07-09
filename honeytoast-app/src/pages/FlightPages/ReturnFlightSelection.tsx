@@ -143,7 +143,7 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
                 <td>{departureFlightDetails["flight_number"]}</td>
                 <td><strong>{departureFlightDetails["departure_airport"]}</strong> <br/> {departureFlightDetails["departure_time"]}</td>
                 <td><strong>{departureFlightDetails["arrival_airport"]}</strong> <br/> {departureFlightDetails["arrival_time"]}</td>
-                <td>{departureFlightDetails["price"]} USD</td>
+                <td>{departureFlightDetails["price"]} {booking["currency"]}</td>
                 <td>{departureFlightDetails["layovers"]}</td>
                 <td>{departureFlightDetails["airline"]}</td>
             </tr>
@@ -173,7 +173,7 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
                   <td>{flight["flights"][0]["flight_number"]}</td>
                   <td><strong>{flight["flights"][0]["departure_airport"]["name"]}</strong> <br/> {flight["flights"][0]["departure_airport"]["time"]}</td>
                   <td><strong>{flight["flights"][flight["flights"].length - 1]["arrival_airport"]["name"]}</strong> <br/> {flight["flights"][flight["flights"].length - 1]["arrival_airport"]["time"]}</td>
-                  <td>{flight.price} USD </td>
+                  <td>{flight.price ? `${booking["currency"]} ${flight.price}` : <span>N/A</span>}</td>
                   <td>{flight["flights"].length}</td>
                   <td>{flight["flights"][0]["airline"]}</td>
                   {/* function has to take in the booking token onClick={() => bookFlight(flight["booking_token"])}*/}
