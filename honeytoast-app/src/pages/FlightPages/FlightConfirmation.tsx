@@ -153,7 +153,10 @@ function FlightConfirmation({ user }: FlightConfirmationProps) {
             </tbody>
         </table>
         <br/>
-        <h3>Total Price: <strong>{booking["currency"]} {apiResponse["price_insights"]?.lowest_price}</strong></h3>
+        <h3>Total Price: <strong>{apiResponse["price_insights"].lowest_price ? 
+            `${booking["currency"]} ${apiResponse["price_insights"].lowest_price}` : 
+            <span>N/A</span>}</strong>
+        </h3> 
         <button onClick={() => redirectToBookingPage()}>Book Now!!</button>
         <br/>
         <br/>

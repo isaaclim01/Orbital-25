@@ -143,7 +143,7 @@ function ReturnFlightSelection({user}: ReturnFlightSelectionProps) {
                 <td>{departureFlightDetails["flight_number"]}</td>
                 <td><strong>{departureFlightDetails["departure_airport"]}</strong> <br/> {departureFlightDetails["departure_time"]}</td>
                 <td><strong>{departureFlightDetails["arrival_airport"]}</strong> <br/> {departureFlightDetails["arrival_time"]}</td>
-                <td>{departureFlightDetails["price"]} {booking["currency"]}</td>
+                <td>{booking["currency"]} {departureFlightDetails["price"]} </td>
                 <td>{departureFlightDetails["layovers"]}</td>
                 <td>{departureFlightDetails["airline"]}</td>
             </tr>
