@@ -22,8 +22,10 @@ function FlightConfirmation({ user }: FlightConfirmationProps) {
     const booking = state?.booking;
     const apiResponse = state?.api_response;
     const [message, setMessage] = useState("");
-    // const apiResponse = flight_summary_response;
 
+    const navigate = useNavigate();
+
+    // const apiResponse = flight_summary_response;
     // console.log("Flight Summary API Response:", JSON.stringify(apiResponse, null, 2));
 
     if (apiResponse === undefined || apiResponse === null || booking === undefined) {
@@ -84,6 +86,7 @@ function FlightConfirmation({ user }: FlightConfirmationProps) {
                 newTab.document.close();
                 setMessage("Redirect successful! Please complete your booking in the new tab.");
                 alert("Successfully booked your next trip? Head over to the \"My Trips\" page to add your new trip!");
+                navigate("/return-flight-selection");
             } else {
                 console.error("Popup blocked.");
                 setMessage("Redirect failed! Please check your popup blocker settings.");
