@@ -74,7 +74,7 @@ function Flight({ user }: FlightProps) {
       setStops(Number(e.target.value));
   }
   const onInputChangeCurrency = (e: ChangeEvent<HTMLInputElement>) => {
-      setCurrency(e.target.value);
+      setCurrency(e.target.value.toUpperCase());
   }
   const onInputChangeSortBy = (e: ChangeEvent<HTMLSelectElement>) => {
       setSortBy(e.target.value);
