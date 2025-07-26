@@ -17,6 +17,7 @@ interface DateRange {
 }
 
 interface People {
+    [key: string]: number;
     adult: number;
     children: number;
     rooms: number;
@@ -72,6 +73,14 @@ function AccomHome() {
 
     };
 
+    const handleOption = (type: string, op: string) => {
+        setPeople((prev) => {
+            return {
+                ...prev,
+                [type]: op === "inc" ? prev[type] + 1 : prev[type] - 1
+            };
+        });
+    };
     const handleClick = () => {
         console.log("button clicked")
     };
@@ -80,8 +89,9 @@ function AccomHome() {
     return (
         <div className="searchBarContainer">
             <div className="searchBar">
-                <div className="searchBarItem">
+                <div className="searchBarItemFirst">
                     <FaMapLocationDot size={42} />
+                    <span> </span>
                     <TextField
                         label="Destination"
                         fullWidth
@@ -106,38 +116,79 @@ function AccomHome() {
                         endDatePlaceholder="Check-out date"
                     />
                 </div>
-                <div className="searchBarItem">
-                    <FaPeopleGroup size={42} />
-                    <Box onClick={() => setOpenPeople(!openPeople)}
-                        sx = {{outline: 1,
+                <div className="searchBarItem peopleSelector">
+                    <FaPeopleGroup size={70} />
+                    <Box 
+                    onClick={() => setOpenPeople(!openPeople)}
+                        sx={{
+                            outline: 1,
+                            outlineColor: openPeople ? "#F97e54" : "rgba(0, 0, 0, 0.23)",
                             borderRadius: 1,
-                            width: 700,
+                            width: '100%',
                             height: 25,
                             padding: 2,
                             fontSize: 18,
+                            cursor: 'pointer',
+                            transition: 'outline-color 0.2s ease',
                             '&:hover': {
-                                outlineColor: "#F97e54"                          }
-                        }}>
-                        {`${people.adult} adult | ${people.children} children | ${people.rooms} room`}
+                                outlineColor: "#F97e54"
+                            }
+                        }}
+                    >
+                        {`${people.adult} adult${people.adult !== 1 ? 's' : ''} • ${people.children} child${people.children !== 1 ? 'ren' : ''} • ${people.rooms} room${people.rooms !== 1 ? 's' : ''}`}
                     </Box>
                     {openPeople && (
-                        <Box className="options">
-                            <div className="optionItem">
-                                <span>Adult</span>
-                                <div className="optionCounter">
-                                    <Button>-</Button>
-                                    <span>{people.adult}</span>
-                                    <Button>+</Button>
+                        <>
+                            <div className="optionsBackdrop" onClick={() => setOpenPeople(false)} />
+                            <Box className="options">
+                                <div className="optionItem">
+                                    <span>Adult</span>
+                                    <div className="optionCounter">
+                                        <Button
+                                            disabled={people.adult <= 1}
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("adult", "dec")}>-</Button>
+                                        <span>{people.adult}</span>
+                                        <Button
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("adult", "inc")}>+</Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </Box>
+                                <div className="optionItem">
+                                    <span>Children</span>
+                                    <div className="optionCounter">
+                                        <Button
+                                            disabled={people.children <= 0}
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("children", "dec")}>-</Button>
+                                        <span>{people.children}</span>
+                                        <Button
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("children", "inc")}>+</Button>
+                                    </div>
+                                </div>
+                                <div className="optionItem">
+                                    <span>Rooms</span>
+                                    <div className="optionCounter">
+                                        <Button
+                                            disabled={people.rooms <= 1}
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("rooms", "dec")}>-</Button>
+                                        <span>{people.rooms}</span>
+                                        <Button
+                                            className="optionCounterButton"
+                                            onClick={() => handleOption("rooms", "inc")}>+</Button>
+                                    </div>
+                                </div>
+                            </Box>
+                        </>
                     )}
                 </div>
                 <ThemeProvider theme={theme}>
-                    <Button 
+                    <Button
                         variant="contained"
                         onClick={handleClick}>
-                            Search
+                        Search
                     </Button>
                 </ThemeProvider>
             </div>

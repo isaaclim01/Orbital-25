@@ -1,12 +1,3 @@
-.searchBarContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
-    /* Full viewport height */
-    padding: 20px;
-}
-
 .searchBar {
     display: flex;
     align-items: center;
@@ -25,6 +16,15 @@
     flex: 1;
     min-width: 0;
 }
+
+.searchBarItemFirst {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    flex: 1;
+    min-width: 0;
+}
+
 
 .searchBarItem:last-child {
     border-right: none;
@@ -60,29 +60,94 @@
     border-radius: 4px;
 }
 
+.searchBarContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh; /* Adjust as needed */
+  width: 100%;
+}
+
+.searchBarItem.peopleSelector {
+  position: relative;
+  flex: 1; /* Takes remaining space */
+  max-width: 33%; /* 1/3 of the search bar width */
+}
+
 .options {
-  z-index: 2;
   position: absolute;
-  margin-top: 120px;
-  margin-left: 25px;
-  width: 350px;
+  top: 100%;
+  left: 0;
+  width: 100%;
   background-color: white;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  z-index: 100;
+  margin-top: 8px;
 }
 
 .optionItem {
-    width: 200px;
-    display: flex;
-    justify-content: space-between;
-    margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.optionItem:last-child {
+  margin-bottom: 0;
+}
+
+.optionItem span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .optionCounter {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: black;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.optionCounterButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #F97e54;
+  color: #F97e54;
+  background: transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.optionCounterButton:hover {
+  background-color: #F97e54;
+  color: white;
+}
+
+.optionCounterButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent;
+  color: #F97e54;
+}
+
+.optionCounter span {
+  min-width: 24px;
+  text-align: center;
+}
+
+.optionsBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: transparent;
 }
