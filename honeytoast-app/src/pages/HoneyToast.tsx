@@ -14,6 +14,7 @@ import Hotel from './hotel/Hotel';
 import ReturnFlightSelection from './FlightPages/ReturnFlightSelection';
 import FlightConfirmation from './FlightPages/FlightConfirmation';
 import Test from './FlightPages/test';
+import AccomHome from './accom/AccomHome';
 
 interface HoneyToastProps {
   user: Session['user'];
@@ -42,7 +43,7 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/" element={<Home user={user}/>} />
             <Route path="/trips" element={<Trips user={user}/>} />
             <Route path="/flight" element={<Flight user={user}/>} />
-            <Route path="/accommodation" element={<List />} />
+            <Route path="/accommodation" element={<AccomHome />} />
             <Route path="/hotels/:id" element={<Hotel user={user}/>} />
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
