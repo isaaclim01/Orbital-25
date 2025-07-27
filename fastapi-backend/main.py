@@ -168,7 +168,7 @@ def get_nylas_calendars():
         }
     )
 
-    # return events[0]
+    return events[0]
 
     event_sorted_array = []
 
