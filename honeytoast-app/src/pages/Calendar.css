@@ -1,0 +1,52 @@
+.fc-event-title {
+    color: black;
+    border-radius: 6px;
+    white-space: normal !important; 
+    overflow: visible !important;    
+    text-overflow: unset !important; 
+    word-break: break-word;  
+}
+
+.fc-event-time {
+    white-space: nowrap !important; /* time displayed without wrapping, but title wraps*/
+    overflow: visible !important;
+    text-overflow: ellipsis;
+    margin-right: 5px; 
+    display: inline-block; 
+    vertical-align: middle;
+}
+
+.calendar-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.my-calendar-wrapper {
+    /* margin: 30px 100px; */
+    flex: 0 0 65%;
+    border-right: 1px solid #ddd;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.event-info {
+    flex: 0 0 30%;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.add-event-button {
+    background-color: #1a252f;
+    margin: 13px 0px 0px 0px;
+    text-align: center;
+    padding: 0.4em 0.65em;
+    color: #fff;
+    order: 1px solid transparent;
+    border-radius: 0.25em;
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: 400;
+    line-height: 1.5;
+    vertical-align: middle;
+}
