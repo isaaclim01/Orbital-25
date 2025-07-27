@@ -1,29 +1,23 @@
-import { FaMapLocationDot } from "react-icons/fa6";
+import { FaMapLocationDot, FaPeopleGroup } from "react-icons/fa6";
 import { CiCalendarDate } from "react-icons/ci";
-import { FaPeopleGroup } from "react-icons/fa6";
 import { ChangeEvent, useState } from 'react';
 import { DateRangeInput } from '@cameratajs/react-date-range-input';
 import './AccomHome.css';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Button, TextField, Box } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Box } from "@mui/material";
-
-
-
-interface DateRange {
-    startDate: Date | null;
-    endDate: Date | null;
-}
-
-interface People {
-    [key: string]: number;
-    adult: number;
-    children: number;
-    rooms: number;
-}
+import { useNavigate } from 'react-router-dom';
+import { DateRange, People } from "../../types";
+import { useSearch } from "../../context/SearchContext";
 
 function AccomHome() {
+    const navigate = useNavigate();
+    const {
+        searchState,
+        updateDestination,
+        updateDates,
+        updateOptions,
+        resetSearch
+    } = useSearch(); // Use the search context
 
     const theme = createTheme({
         palette: {
@@ -33,58 +27,53 @@ function AccomHome() {
         }
     });
 
-    const [date, setDate] = useState<DateRange>({
-        startDate: null,
-        endDate: null,
-    });
-
-    const [destination, setDestination] = useState<String>("");
     const [openPeople, setOpenPeople] = useState<boolean>(false);
-    const [people, setPeople] = useState<People>({
-        adult: 1,
-        children: 0,
-        rooms: 1
-    });
-
 
     const handleDateChange = (newDate: DateRange) => {
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
+        today.setHours(0, 0, 0, 0);
 
-        // Validate start date
+        // Validate dates
         let startDate = newDate.startDate;
-        if (startDate && startDate < today) {
-            startDate = null; // Reset to today if earlier date is selected
-        }
-
-        // Validate end date
         let endDate = newDate.endDate;
-        if (endDate) {
-            // Ensure end date isn't before today or before start date
-            if (endDate < today) {
-                endDate = null;
-            }
+
+        if (startDate && startDate < today) {
+            startDate = null;
         }
 
-        setDate({
-            startDate: startDate,
-            endDate: endDate
-        })
+        if (endDate && endDate < today) {
+            endDate = null;
+        }
 
-    };
-
-    const handleOption = (type: string, op: string) => {
-        setPeople((prev) => {
-            return {
-                ...prev,
-                [type]: op === "inc" ? prev[type] + 1 : prev[type] - 1
-            };
+        updateDates({
+            startDate,
+            endDate
         });
     };
-    const handleClick = () => {
-        console.log("button clicked")
+
+    const handleOption = (type: keyof People, op: "inc" | "dec") => {
+        const currentValue = searchState.options[type];
+        const newValue = op === "inc" ? currentValue + 1 : currentValue - 1;
+
+        updateOptions({
+            [type]: newValue
+        });
     };
 
+    const handleClick = () => {
+        if (!searchState.dates.startDate || !searchState.dates.endDate) {
+            alert("Please select both start and end dates");
+            return;
+        }
+
+        navigate('/hotels', {
+            state: {
+                destination: searchState.destination,
+                dates: searchState.dates,
+                options: searchState.options
+            }
+        });
+    };
 
     return (
         <div className="searchBarContainer">
@@ -95,17 +84,17 @@ function AccomHome() {
                     <TextField
                         label="Destination"
                         fullWidth
-                        value={destination}
+                        value={searchState.destination}
                         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                            setDestination(event.target.value);
+                            updateDestination(event.target.value);
                         }}
                     />
                 </div>
                 <div className="searchBarItem">
                     <CiCalendarDate size={70} />
                     <DateRangeInput
-                        startDate={date.startDate}
-                        endDate={date.endDate}
+                        startDate={searchState.dates.startDate}
+                        endDate={searchState.dates.endDate}
                         onChange={handleDateChange}
                         calendars={2}
                         anchor="bottom"
@@ -118,8 +107,8 @@ function AccomHome() {
                 </div>
                 <div className="searchBarItem peopleSelector">
                     <FaPeopleGroup size={70} />
-                    <Box 
-                    onClick={() => setOpenPeople(!openPeople)}
+                    <Box
+                        onClick={() => setOpenPeople(!openPeople)}
                         sx={{
                             outline: 1,
                             outlineColor: openPeople ? "#F97e54" : "rgba(0, 0, 0, 0.23)",
@@ -135,7 +124,7 @@ function AccomHome() {
                             }
                         }}
                     >
-                        {`${people.adult} adult${people.adult !== 1 ? 's' : ''} • ${people.children} child${people.children !== 1 ? 'ren' : ''} • ${people.rooms} room${people.rooms !== 1 ? 's' : ''}`}
+                        {`${searchState.options.adult} Adult${searchState.options.adult !== 1 ? 's' : ''} • ${searchState.options.children} Child${searchState.options.children !== 1 ? 'ren' : ''} • ${searchState.options.room} Room${searchState.options.room !== 1 ? 's' : ''}`}
                     </Box>
                     {openPeople && (
                         <>
@@ -145,10 +134,10 @@ function AccomHome() {
                                     <span>Adult</span>
                                     <div className="optionCounter">
                                         <Button
-                                            disabled={people.adult <= 1}
+                                            disabled={searchState.options.adult <= 1}
                                             className="optionCounterButton"
                                             onClick={() => handleOption("adult", "dec")}>-</Button>
-                                        <span>{people.adult}</span>
+                                        <span>{searchState.options.adult}</span>
                                         <Button
                                             className="optionCounterButton"
                                             onClick={() => handleOption("adult", "inc")}>+</Button>
@@ -158,10 +147,10 @@ function AccomHome() {
                                     <span>Children</span>
                                     <div className="optionCounter">
                                         <Button
-                                            disabled={people.children <= 0}
+                                            disabled={searchState.options.children <= 0}
                                             className="optionCounterButton"
                                             onClick={() => handleOption("children", "dec")}>-</Button>
-                                        <span>{people.children}</span>
+                                        <span>{searchState.options.children}</span>
                                         <Button
                                             className="optionCounterButton"
                                             onClick={() => handleOption("children", "inc")}>+</Button>
@@ -171,13 +160,13 @@ function AccomHome() {
                                     <span>Rooms</span>
                                     <div className="optionCounter">
                                         <Button
-                                            disabled={people.rooms <= 1}
+                                            disabled={searchState.options.room <= 1}
                                             className="optionCounterButton"
-                                            onClick={() => handleOption("rooms", "dec")}>-</Button>
-                                        <span>{people.rooms}</span>
+                                            onClick={() => handleOption("room", "dec")}>-</Button>
+                                        <span>{searchState.options.room}</span>
                                         <Button
                                             className="optionCounterButton"
-                                            onClick={() => handleOption("rooms", "inc")}>+</Button>
+                                            onClick={() => handleOption("room", "inc")}>+</Button>
                                     </div>
                                 </div>
                             </Box>
@@ -187,7 +176,9 @@ function AccomHome() {
                 <ThemeProvider theme={theme}>
                     <Button
                         variant="contained"
-                        onClick={handleClick}>
+                        onClick={handleClick}
+                        disabled={!searchState.dates.startDate || !searchState.dates.endDate || !searchState.destination}
+                    >
                         Search
                     </Button>
                 </ThemeProvider>

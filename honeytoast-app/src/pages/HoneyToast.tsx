@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import Flight from './FlightPages/Flight';
-import List from './hotelSearch/List';
+import List from './accom/List';
 import Itinerary from './Itinerary';
 import Calendar from './Calendar';
 import './HoneyToast.css';
@@ -10,7 +10,7 @@ import { supabase } from '../App';
 import { Session } from '@supabase/supabase-js';
 import Trips from './Trips';
 import OutboundFlightSelection from './FlightPages/OutboundFlightSelection';
-import Hotel from './hotel/Hotel';
+import Hotel from './accom/Hotel';
 import ReturnFlightSelection from './FlightPages/ReturnFlightSelection';
 import FlightConfirmation from './FlightPages/FlightConfirmation';
 import Test from './FlightPages/test';
@@ -44,6 +44,7 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/trips" element={<Trips user={user}/>} />
             <Route path="/flight" element={<Flight user={user}/>} />
             <Route path="/accommodation" element={<AccomHome />} />
+            <Route path="/hotels" element={<List/>}/>
             <Route path="/hotels/:id" element={<Hotel user={user}/>} />
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/calendar" element={<Calendar />} />
