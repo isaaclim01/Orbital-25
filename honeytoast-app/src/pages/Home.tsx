@@ -4,6 +4,7 @@ import "./Home.css"
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
 import { FaBed } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
+import { IoMdBook } from "react-icons/io";
 
 interface HomeProps {
   user: Session['user'];
@@ -32,6 +33,15 @@ function Home({ user }: HomeProps) {
             </div>
             <h3>My Trips</h3>
             <p>View and manage your upcoming trips</p>
+          </div>
+
+          {/* Booking Section */}
+          <div className="quickstart-card" onClick={() => window.location.href = '/bookings'}>
+            <div className="card-icon">
+              <IoMdBook size="40" />
+            </div>
+            <h3>My Bookings</h3>
+            <p>View your booked accommodations</p>
           </div>
 
           {/* Flight Section */}

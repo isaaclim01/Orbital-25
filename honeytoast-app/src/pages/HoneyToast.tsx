@@ -15,6 +15,7 @@ import ReturnFlightSelection from './FlightPages/ReturnFlightSelection';
 import FlightConfirmation from './FlightPages/FlightConfirmation';
 import Test from './FlightPages/test';
 import AccomHome from './accom/AccomHome';
+import Bookings from './bookings/Bookings';
 
 interface HoneyToastProps {
   user: Session['user'];
@@ -52,6 +53,7 @@ function HoneyToast({user}: HoneyToastProps) {
             <Route path="/return-flight-selection" element={<ReturnFlightSelection user={user}/>} />
             <Route path="/flight-confirmation" element={<FlightConfirmation user={user}/>} />
             <Route path="/test" element={<Test />} />
+            <Route path="/bookings" element={<Bookings />}/>
           </Routes>
         </div>
       </div>
