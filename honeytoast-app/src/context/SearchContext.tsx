@@ -25,10 +25,15 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateOptions = (options: Partial<People>) => {
-    setSearchState(prev => ({
-      ...prev,
-      options: { ...prev.options, ...options }
-    }));
+    console.log('Updating options with:', options); // Debug log
+    setSearchState(prev => {
+      const newState = {
+        ...prev,
+        options: { ...prev.options, ...options }
+      };
+      console.log('New state:', newState); // Debug log
+      return newState;
+    });
   };
 
   const updatePriceRange = (min: number, max: number) => {

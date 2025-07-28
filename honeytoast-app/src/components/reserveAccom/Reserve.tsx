@@ -7,6 +7,7 @@ import axios from "axios";
 import { FaCircleXmark } from "react-icons/fa6";
 import { Session } from "@supabase/supabase-js";
 import { useSearch } from "../../context/SearchContext";
+import { format } from "date-fns";
 
 interface RoomType {
     id: number;
@@ -63,7 +64,7 @@ const Reserve = ({ hotelId, setOpen, user }: { hotelId: number; setOpen: (value:
 
         while (current <= end) {
             // Format as YYYY-MM-DD
-            const dateStr = current.toISOString().split('T')[0];
+            const dateStr = format(current, 'yyyy-MM-dd');
             dates.push(dateStr);
             current.setDate(current.getDate() + 1);
         }
@@ -95,8 +96,8 @@ const Reserve = ({ hotelId, setOpen, user }: { hotelId: number; setOpen: (value:
                 user: user.id,
                 hotel: hotelId,
                 rooms: selectedRooms,
-                dateFrom: searchState.dates.startDate?.toISOString(),
-                dateTo: searchState.dates.endDate?.toISOString(),
+                dateFrom: format(searchState.dates.startDate, 'yyyy-MM-dd'),
+                dateTo: format(searchState.dates.endDate, 'yyyy-MM-dd'),
                 price: totalPrice,
             });
 

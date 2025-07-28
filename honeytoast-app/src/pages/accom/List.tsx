@@ -7,6 +7,7 @@ import { Hotel, DateRange, People } from "../../types"
 import { DateRangeInput } from "@cameratajs/react-date-range-input";
 import { Button, TextField } from "@mui/material";
 import { useSearch } from "../../context/SearchContext";
+import { format } from "date-fns";
 
 
 interface LocationState {
@@ -46,8 +47,12 @@ const List = () => {
     });
 
     if (searchState.dates.startDate && searchState.dates.endDate) {
-      params.append('startDate', searchState.dates.startDate.toISOString().split('T')[0]);
-      params.append('endDate', searchState.dates.endDate.toISOString().split('T')[0]);
+      
+      const startDateStr = format(searchState.dates.startDate, 'yyyy-MM-dd');
+      const endDateStr = format(searchState.dates.endDate, 'yyyy-MM-dd');
+      params.append('startDate', startDateStr);
+      params.append('endDate', endDateStr);
+      
     }
 
     return params.toString();
@@ -83,10 +88,6 @@ const List = () => {
     if (endDate && endDate < today) endDate = null;
 
     updateDates({ startDate, endDate });
-  };
-
-  const handleOptionChange = (type: keyof People, value: number) => {
-    updateOptions({ [type]: value });
   };
 
   const handleClick = () => {
@@ -165,6 +166,9 @@ const List = () => {
                     min={1}
                     className="lsOptionInput"
                     placeholder={searchState.options.adult.toString()}
+                    onChange={(e) => updateOptions({
+                      adult: parseInt(e.target.value) || 1 // Fallback to 1 if NaN
+                    })}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -174,6 +178,9 @@ const List = () => {
                     min={0}
                     className="lsOptionInput"
                     placeholder={searchState.options.children.toString()}
+                    onChange={(e) => updateOptions({
+                      children: parseInt(e.target.value) || 0 // Fallback to 0 if NaN
+                    })}
                   />
                 </div>
                 <div className="lsOptionItem">
@@ -183,6 +190,9 @@ const List = () => {
                     min={1}
                     className="lsOptionInput"
                     placeholder={searchState.options.room.toString()}
+                    onChange={(e) => updateOptions({
+                      room: parseInt(e.target.value) || 1 // Fallback to 1 if NaN
+                    })}
                   />
                 </div>
               </div>

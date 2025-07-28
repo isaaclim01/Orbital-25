@@ -24,8 +24,6 @@ const Hotel = ({ user }: HotelProps) => {
     const [slideNumber, setSlideNumber] = useState<number>(0);
     const [open, setOpen] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [days, setDays] = useState<number>(1);
-    const [options, setOptions] = useState({ room: 1 });
 
     const { data, loading, error }: FetchResult = useFetch(`/hotels/find/${id}`);
     const navigate = useNavigate();

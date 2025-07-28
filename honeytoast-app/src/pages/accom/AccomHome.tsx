@@ -3,7 +3,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import { ChangeEvent, useState } from 'react';
 import { DateRangeInput } from '@cameratajs/react-date-range-input';
 import './AccomHome.css';
-import { Button, TextField, Box } from '@mui/material';
+import { Button, TextField, Box, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { DateRange, People } from "../../types";
@@ -77,6 +77,7 @@ function AccomHome() {
 
     return (
         <div className="searchBarContainer">
+            <Typography variant="h4" className="heading"  sx={{color: "darkorange"}} gutterBottom>Accommodation Search</Typography>
             <div className="searchBar">
                 <div className="searchBarItemFirst">
                     <FaMapLocationDot size={42} />
