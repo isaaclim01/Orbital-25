@@ -5,9 +5,10 @@ import SearchItem from "../../components/searchItem/SearchItem";
 import useFetch from "../../hooks/useFetch";
 import { Hotel, DateRange, People } from "../../types"
 import { DateRangeInput } from "@cameratajs/react-date-range-input";
-import { Button, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { useSearch } from "../../context/SearchContext";
 import { format } from "date-fns";
+import { validCities, isValidCity } from "../../components/ValidCity";
 
 
 interface LocationState {
@@ -47,12 +48,12 @@ const List = () => {
     });
 
     if (searchState.dates.startDate && searchState.dates.endDate) {
-      
+
       const startDateStr = format(searchState.dates.startDate, 'yyyy-MM-dd');
       const endDateStr = format(searchState.dates.endDate, 'yyyy-MM-dd');
       params.append('startDate', startDateStr);
       params.append('endDate', endDateStr);
-      
+
     }
 
     return params.toString();
@@ -109,12 +110,13 @@ const List = () => {
           <div className="listSearch">
             <h1 className="lsTitle">Search</h1>
             <div className="lsItem">
-              <TextField
-                label="Destination"
+              <Autocomplete
+                options={validCities}
                 fullWidth
                 value={searchState.destination}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  updateDestination(event.target.value);
+                renderInput={(params) => <TextField {...params} label="Destination" />}
+                onChange={(e, newValue: string | null) => {
+                  newValue && updateDestination(newValue);
                 }}
                 sx={{
                   backgroundColor: "white"

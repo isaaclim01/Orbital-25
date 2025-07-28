@@ -3,11 +3,12 @@ import { CiCalendarDate } from "react-icons/ci";
 import { ChangeEvent, useState } from 'react';
 import { DateRangeInput } from '@cameratajs/react-date-range-input';
 import './AccomHome.css';
-import { Button, TextField, Box, Typography } from '@mui/material';
+import { Button, TextField, Box, Typography, Autocomplete } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { DateRange, People } from "../../types";
 import { useSearch } from "../../context/SearchContext";
+import { validCities, isValidCity } from "../../components/ValidCity";
 
 function AccomHome() {
     const navigate = useNavigate();
@@ -82,12 +83,13 @@ function AccomHome() {
                 <div className="searchBarItemFirst">
                     <FaMapLocationDot size={42} />
                     <span> </span>
-                    <TextField
-                        label="Destination"
+                    <Autocomplete
+                        options={validCities}
                         fullWidth
                         value={searchState.destination}
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                            updateDestination(event.target.value);
+                        renderInput={(params) => <TextField {...params} label="Destination"/>}
+                        onChange={(e, newValue: string | null) => {
+                            newValue && updateDestination(newValue);
                         }}
                     />
                 </div>

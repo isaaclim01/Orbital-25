@@ -2,11 +2,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { supabase } from "../App";
 import { Session } from "@supabase/supabase-js";
 import { useSearch } from "../context/SearchContext";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import { TextField, Button, Box, Typography, Autocomplete } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { DateRangeInput } from "@cameratajs/react-date-range-input";
 import { DateRange } from "../types";
 import { format } from "date-fns";
+import { isValidCity, validCities } from "./ValidCity";
 
 interface TripInputProps {
     user: Session['user'];
@@ -72,6 +73,11 @@ function TripInput({ user, fetchTrips }: TripInputProps) {
             return;
         }
 
+        if (!isValidCity(start) || !isValidCity(searchState.destination)) {
+            setMessage("Please enter valid cities");
+            return;
+        }
+
         if (searchState.options.adult <= 0) {
             setMessage("You can't have a trip without people!");
             return;
@@ -107,27 +113,29 @@ function TripInput({ user, fetchTrips }: TripInputProps) {
                 <Grid container spacing={2} alignItems="center">
                     {/* From */}
                     <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField
-                            label="From"
+                        <Autocomplete
+                            options={validCities}
+                            renderInput={(params) => <TextField {...params} label="From"/>}
                             fullWidth
                             value={start}
                             sx={{
                                 backgroundColor: "white"
                             }}
-                            onChange={(e) => setStart(e.target.value)}
+                            onChange={(e, newValue: string | null) => newValue && setStart(newValue)}
                         />
                     </Grid>
 
                     {/* To */}
                     <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField
-                            label="To"
+                        <Autocomplete
+                            options={validCities}
+                            renderInput={(params) => <TextField {...params} label="To"/>}
                             fullWidth
                             value={searchState.destination}
                             sx={{
                                 backgroundColor: "white"
                             }}
-                            onChange={(e) => updateDestination(e.target.value)}
+                            onChange={(e, newValue: string | null) => newValue && updateDestination(newValue)}
                         />
                     </Grid>
 
