@@ -22,10 +22,11 @@ function Trips({ user }: TripsProps) {
     let { data, error } = await supabase
       .from("Trips")
       .select("*")
-      .order("created_at", {
-        ascending: true,
+      .order("start_date", {
+        ascending: false,
       })
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .limit(10);
     if (data !== null) {
       setTrips(data as Trip[]);
     }
@@ -46,7 +47,8 @@ function Trips({ user }: TripsProps) {
 
       <main>
         <TripInput
-          user={user} />
+          user={user}
+          fetchTrips={fetchTrips} />
           <br></br>
         <table>
             <thead>

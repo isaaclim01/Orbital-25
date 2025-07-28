@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Trip {
     id: number;
     start: string;
@@ -20,4 +22,33 @@ export interface Hotel {
     rating: number;
     cheapest_price: number;
     featured: boolean;
+}
+
+export interface DateRange {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+export interface People {
+  adult: number;
+  children: number;
+  room: number;
+}
+
+export interface SearchState {
+  destination: string;
+  dates: DateRange;
+  options: People;
+  minPrice: number;
+  maxPrice: number;
+}
+
+export interface SearchContextType {
+  searchState: SearchState;
+  setSearchState: React.Dispatch<React.SetStateAction<SearchState>>;
+  updateDestination: (destination: string) => void;
+  updateDates: (dates: DateRange) => void;
+  updateOptions: (options: Partial<People>) => void;
+  updatePriceRange: (min: number, max: number) => void;
+  resetSearch: () => void;
 }
