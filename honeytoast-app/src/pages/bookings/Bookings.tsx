@@ -80,7 +80,7 @@ export default function Bookings({ user }: BookingsProps) {
         <div>
             <br />
             <h1 id="title">
-                <strong>{getUsername()}</strong>'s trips
+                <strong>{getUsername()}</strong>'s bookings
             </h1>
 
             <main>
