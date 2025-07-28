@@ -33,6 +33,15 @@ class Booking(BaseModel):
 class BookingRequest(BaseModel):
     post_data: str
 
+class CalendarEvent(BaseModel):
+    title: str
+    start: str
+    end: str
+    description: Optional[str] = None
+    location: Optional[str] = None
+
+class DeleteEvent(BaseModel):
+    id: str
 
 app = FastAPI()
 
@@ -171,7 +180,7 @@ def get_nylas_calendars():
     return events[0]
 
 @app.post("/nylas/calendars")
-def add_new_event():
+def add_new_event(calendarEvent: CalendarEvent):
     NYLAS_CLIENT_ID="4d1f8611-805b-418a-8f0d-b044350e210b"
     NYLAS_API_KEY="nyk_v0_k2kwGhMAJSwZ42dPqI15RLiWIhPEyvV8kvWoSdFmbfCaxWmItVGCnDM3IcYdx3mR"
     NYLAS_API_URI="https://api.us.nylas.com"
@@ -181,10 +190,52 @@ def add_new_event():
     nylas = Client(
         NYLAS_API_KEY,
         NYLAS_API_URI
-    )   
+    )
 
     grant_id = NYLAS_GRANT_ID
 
+    events = nylas.events.create(
+        grant_id,
+        request_body={
+            "title": calendarEvent.title,
+            "when": {
+            "start_date": calendarEvent.start,
+            "end_date": calendarEvent.end
+            },
+            "location": calendarEvent.location,
+            "description": calendarEvent.description
+        },
+        query_params={
+            "calendar_id": "primary"
+        }
+    )
+
+    return events
+
+@app.delete("/nylas/calendars")
+def delete_event(deleteEvent : DeleteEvent):
+    NYLAS_CLIENT_ID="4d1f8611-805b-418a-8f0d-b044350e210b"
+    NYLAS_API_KEY="nyk_v0_k2kwGhMAJSwZ42dPqI15RLiWIhPEyvV8kvWoSdFmbfCaxWmItVGCnDM3IcYdx3mR"
+    NYLAS_API_URI="https://api.us.nylas.com"
+
+    NYLAS_GRANT_ID="506eafd9-86ff-47bd-9d0c-c12d4a8b2161"
+
+    nylas = Client(
+        NYLAS_API_KEY,
+        NYLAS_API_URI
+    )
+
+    grant_id = NYLAS_GRANT_ID
+
+    event = nylas.events.destroy(
+        grant_id,
+        deleteEvent.id,
+        query_params={
+          "calendar_id": "primary"
+        }
+    )
+
+    return event
 
 
 if __name__ == "__main__":

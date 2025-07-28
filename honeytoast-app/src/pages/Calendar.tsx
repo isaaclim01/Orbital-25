@@ -2,7 +2,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import { Session } from "@supabase/supabase-js";
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent, MouseEvent } from 'react';
 
 // import { Dialog } from "@headlessui/react";
 
@@ -33,6 +33,18 @@ interface SelectedEvent {
   location?: string;
 }
 
+interface NewEvent {
+  title: string,
+  start: string,
+  end: string,
+  description?: string,
+  location?: string;
+}
+
+interface deleteEvent {
+  id: string
+}
+
 function Calendar({user} : CalendarProps) {
 
   const [events, setEvents] = useState<CalendarEvent[] | undefined>([]);
@@ -52,11 +64,24 @@ function Calendar({user} : CalendarProps) {
       const response = await api.get("/nylas/calendars")
       const data = response.data
 
+      console.log("Response:", JSON.stringify(data, null, 2))
+      
+      // make the date timing to 2359
+      const isoString = ((date : any) => {
+        const d = new Date(date);
+        d.setHours(23, 59, 0, 0);
+        return d.toISOString();
+      });
+
       const formattedEvents : CalendarEvent[] = data.map((event: any) : CalendarEvent => ({
         id: event.id,
         title: event.title || "No Title",
-        start: new Date(event.when.start_time * 1000).toISOString(),
-        end: new Date(event.when.end_time * 1000).toISOString(),
+        start: event.when?.start_time ? 
+          new Date(event.when.start_time * 1000).toISOString() : 
+          event.when.start_date,
+        end: event.when?.end_time ? 
+          new Date(event.when.end_time * 1000).toISOString() :
+          isoString(event.when.end_date),
         extendedProps: {
           description: event.description || "NIL",
           location: event.location || "NIL",
@@ -106,9 +131,19 @@ function Calendar({user} : CalendarProps) {
     });
   }
 
+  const addEvent = async(eventInfo: NewEvent) => {
+    const response = await api.post("/nylas/calendars", eventInfo);
+
+    if (response.data.hasOwnProperty("error")) {
+      throw new Error(response.data["error"]);
+    }
+
+    return response.data;
+  }
+
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title.length === 0) {
       setMessage("Title field is empty.")
@@ -127,7 +162,43 @@ function Calendar({user} : CalendarProps) {
       return;
     }
 
-    throw new Error('Function not implemented.');
+    try {
+      const calendarEvent : NewEvent = {
+        title,
+        start: startDate,
+        end: endDate,
+        description,
+        location
+      }
+      setMessage("Adding event...")
+      const response = await addEvent(calendarEvent);
+      setMessage("Success!")
+      window.location.reload();
+    } catch (error) {
+      console.error("Error in adding event: ", error);
+      setMessage("Failed to add event due to internal server error, try again later.")
+    }
+  }
+  
+  const [deleteMessage, setDeleteMessage] = useState("")
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (selectedEvent != null) {
+      try {
+        const deleteEventInfo : deleteEvent = {id: selectedEvent.id}
+        setDeleteMessage("Deleting event...")
+        const response = await api.delete("/nylas/calendars", {data: deleteEventInfo})
+        setDeleteMessage("Success!")
+        window.location.reload();
+      } catch (error) {
+        console.error("Error in adding event: ", error);
+        setDeleteMessage("Failed to delete event due to internal server error, try again later.")
+      }
+    }
+
+    return;
   }
 
   return (
@@ -190,7 +261,7 @@ function Calendar({user} : CalendarProps) {
                   required
                   id="title"
                   name="EventTitle"
-                  placeholder="eg. Dental Appointment"
+                  placeholder="eg. Thailand Trip"
                   onChange={onInputChangeTitle} />
                 <br />
 
@@ -231,10 +302,12 @@ function Calendar({user} : CalendarProps) {
                   name="Location"
                   onChange={onInputChangeLocation} />
                 <br />
+                <br />
                   
-                <button type="submit">Search Flight</button>
+                <button type="submit"> Add to Calendar </button>
 
               </form>
+              <br/>
               <strong>
                 {message}
               </strong>
@@ -248,8 +321,9 @@ function Calendar({user} : CalendarProps) {
             <p><strong>End:</strong> {selectedEvent.end.toString()}</p>
             <p><strong>Description:</strong> {selectedEvent.description}</p>
             <p><strong>Location:</strong> {selectedEvent.location}</p>
-            <button>Update</button>
-            <button>Delete</button>
+            {/* <button>Update</button> */}
+            <button onClick={handleDelete}>Delete</button>
+            <p><strong>{deleteMessage}</strong></p>
           </div>
           ) : (<p><strong>No Event Selected</strong></p>)}
       </div>
