@@ -153,7 +153,7 @@ def get_nylas_calendars():
     NYLAS_API_KEY="nyk_v0_k2kwGhMAJSwZ42dPqI15RLiWIhPEyvV8kvWoSdFmbfCaxWmItVGCnDM3IcYdx3mR"
     NYLAS_API_URI="https://api.us.nylas.com"
 
-    NYLAS_GRANT_ID="506eafd9-86ff-47bd-9d0c-c12d4a8b2161"
+    NYLAS_GRANT_ID="9112ed1b-cf48-43af-bf31-3499e1efc8e7"
 
     nylas = Client(
         NYLAS_API_KEY,
@@ -185,7 +185,7 @@ def add_new_event(calendarEvent: CalendarEvent):
     NYLAS_API_KEY="nyk_v0_k2kwGhMAJSwZ42dPqI15RLiWIhPEyvV8kvWoSdFmbfCaxWmItVGCnDM3IcYdx3mR"
     NYLAS_API_URI="https://api.us.nylas.com"
 
-    NYLAS_GRANT_ID="506eafd9-86ff-47bd-9d0c-c12d4a8b2161"
+    NYLAS_GRANT_ID="9112ed1b-cf48-43af-bf31-3499e1efc8e7"
 
     nylas = Client(
         NYLAS_API_KEY,
@@ -218,7 +218,7 @@ def delete_event(deleteEvent : DeleteEvent):
     NYLAS_API_KEY="nyk_v0_k2kwGhMAJSwZ42dPqI15RLiWIhPEyvV8kvWoSdFmbfCaxWmItVGCnDM3IcYdx3mR"
     NYLAS_API_URI="https://api.us.nylas.com"
 
-    NYLAS_GRANT_ID="506eafd9-86ff-47bd-9d0c-c12d4a8b2161"
+    NYLAS_GRANT_ID="9112ed1b-cf48-43af-bf31-3499e1efc8e7"
 
     nylas = Client(
         NYLAS_API_KEY,

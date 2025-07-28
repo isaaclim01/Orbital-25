@@ -78,10 +78,14 @@ function Calendar({user} : CalendarProps) {
         title: event.title || "No Title",
         start: event.when?.start_time ? 
           new Date(event.when.start_time * 1000).toISOString() : 
-          event.when.start_date,
+          event.when?.start_date ?
+            event.when.start_date :
+            event.when.date,
         end: event.when?.end_time ? 
           new Date(event.when.end_time * 1000).toISOString() :
-          isoString(event.when.end_date),
+          event.when?.end_date ?
+            isoString(event.when.end_date) :
+            event.when.date,
         extendedProps: {
           description: event.description || "NIL",
           location: event.location || "NIL",
@@ -124,8 +128,8 @@ function Calendar({user} : CalendarProps) {
     setSelectedEvent({
       id,
       title,
-      start,
-      end,
+      start: start?.toISOString() ?? "",
+      end: end?.toISOString() ?? start?.toISOString() ?? "",
       description: extendedProps.description,
       location: extendedProps.location,
     });
@@ -317,8 +321,22 @@ function Calendar({user} : CalendarProps) {
           <div style={{ padding: "1rem", marginTop: "1rem" }}>
             {/* <h3><strong>Event Information</strong></h3> */}
             <h3>{selectedEvent.title}</h3>
-            <p><strong>Start:</strong> {selectedEvent.start.toString()}</p>
-            <p><strong>End:</strong> {selectedEvent.end.toString()}</p>
+            <p><strong>Start:</strong> {selectedEvent.start.split('T')[0].toString() + "  "} 
+              {new Date(selectedEvent.start).toLocaleString("en-SG", {
+                  timeZone: "Asia/Singapore",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              }</p>
+            <p><strong>End:</strong> {selectedEvent.end.split('T')[0].toString() + "  "}
+              {new Date(selectedEvent.end).toLocaleString("en-SG", {
+                  timeZone: "Asia/Singapore",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              }</p>
             <p><strong>Description:</strong> {selectedEvent.description}</p>
             <p><strong>Location:</strong> {selectedEvent.location}</p>
             {/* <button>Update</button> */}

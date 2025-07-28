@@ -1,5 +1,6 @@
 .fc-event-title {
-    color: black;
+    color: white;
+    font-weight: 400;
     border-radius: 6px;
     white-space: normal !important; 
     overflow: visible !important;    
@@ -8,12 +9,13 @@
 }
 
 .fc-event-time {
-    white-space: nowrap !important; /* time displayed without wrapping, but title wraps*/
-    overflow: visible !important;
+    display: none !important
+    /* white-space: nowrap !important; /* time displayed without wrapping, but title wraps*/
+    /* overflow: visible !important;
     text-overflow: ellipsis;
     margin-right: 5px; 
     display: inline-block; 
-    vertical-align: middle;
+    vertical-align: middle; */
 }
 
 .calendar-layout {
