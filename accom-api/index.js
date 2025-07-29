@@ -12,7 +12,8 @@ import bookingsRoute from "./routes/bookings.js";
 const app = express();
 // Enable CORS with specific frontend origin
 app.use(cors({
-  origin: 'http://localhost:3000', // Your React app
+  origin: ['http://localhost:3000',
+    'https://orbital-25-five.vercel.app'], // Your React app
   credentials: true, // If using cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
